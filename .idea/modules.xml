@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/backbn.iml" filepath="$PROJECT_DIR$/.idea/backbn.iml" />
+      <module fileurl="file://$PROJECT_DIR$/backbn.iml" filepath="$PROJECT_DIR$/backbn.iml" />
     </modules>
   </component>
 </project>

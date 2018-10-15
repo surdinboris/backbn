@@ -5,8 +5,32 @@
 
 </head>
 <body>
-Backbone /JS
-<script src="/node_modules/jquery/dist/jquery.js"></script>
+<p>Backbone /JS</p>
+<div id="placeholder1"> </div>
 
+<script src="node_modules/jquery/dist/jquery.js"></script>
+<script src="node_modules/underscore/underscore.js"></script>
+<script src="node_modules/backbone/backbone.js"></script>
+<script>
+
+var app = app || {};
+console.log(app);
+console.log($);
+
+//backbone testing
+app.AppView = Backbone.View.extend();
+console.log(app);
+
+//underscore testing
+var toto = {ty:78}
+var yu = _.extend({yu:90},toto);
+
+//jquery testing
+var sttext='';
+    Object.keys(yu).forEach(function(o){sttext=sttext.concat(o,":",yu[o]," ")})
+console.log(sttext)
+$('#placeholder1').text(sttext)
+
+</script>
 </body>
 </html>
