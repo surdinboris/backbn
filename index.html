@@ -10,6 +10,16 @@
     section text
 </section>
 
+<script type="text/template" id="item-template">
+    <div class="view">
+        <input id="todo_complete" type="checkbox" <%= completed ? 'checked="checked"' : '' %> />
+        <label><%= title %></label>
+        <button class="destroy"></button>
+    </div>
+    <input class="edit" value="<%= title %>">
+</script>
+
+
 <script src="node_modules/jquery/dist/jquery.js"></script>
 <script src="node_modules/underscore/underscore.js"></script>
 <script src="node_modules/backbone/backbone.js"></script>

@@ -1,13 +1,27 @@
 /*global Backbone, jQuery, _, ENTER_KEY */
+
+//garbage/testing view
+
 var app = app || {};
 
 (function ($) {
     'use strict';
 
     app.AppView = Backbone.View.extend({
+        //dding template
+        todoTpl: _.template( $('#item-template').html() ),
+
         el: '.todoapp',
+
         initialize: function () {
-            console.log(this.el)
+            //simulating template fill with in-place data
+            //render
+          this.$el.html( this.todoTpl({completed:'completed',title:'Woderful checkbox'}) );
+
+
+
+            $(this.el).css("background-color","red");
+            $('body').css({"background-color":"grey"})
         }
     })
 
