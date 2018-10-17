@@ -16,11 +16,16 @@ var app = app || {};
         initialize: function () {
             //simulating template fill with in-place data
           this.todoModeltest= new app.Todo({title:'kakaModel',completed:true});
-          console.log(this.todoModeltest);
-          this.$el.html( this.todoTpl(this.todoModeltest.attributes) );
+         // console.log(this.todoModeltest.get('title'));
+         // console.log(this.todoModeltest.get('completed'));
+            this.todoModeltest.set('gh','jk')
+            console.log(this.todoModeltest.attributes)
+          //this.$el.html( this.todoTpl(this.todoModeltest.attributes) );
+          this.$el.html( this.todoTpl({title:this.todoModeltest.get('title'),completed:this.todoModeltest.get('completed')} ));
 
-           $(this.el).css("background-color","red");
-           $('body').css({"background-color":"grey"})
+            $(this.el).css("background-color","red");
+          $('body').css({"background-color":"grey"})
+
         }
     })
 
