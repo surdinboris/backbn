@@ -15,13 +15,12 @@ var app = app || {};
 
         initialize: function () {
             //simulating template fill with in-place data
-            //render
-          this.$el.html( this.todoTpl({completed:'completed',title:'Woderful checkbox'}) );
+          this.todoModeltest= new app.Todo({title:'kakaModel',completed:true});
+          console.log(this.todoModeltest);
+          this.$el.html( this.todoTpl(this.todoModeltest.attributes) );
 
-
-
-            $(this.el).css("background-color","red");
-            $('body').css({"background-color":"grey"})
+           $(this.el).css("background-color","red");
+           $('body').css({"background-color":"grey"})
         }
     })
 

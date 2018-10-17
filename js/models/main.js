@@ -11,6 +11,9 @@ var app = app || {};
     app.Todo = Backbone.Model.extend({
         // Default attributes for the todo
         // and ensure that each todo created has `title` and `completed` keys.
+        initialize: function () {
+            console.log('new model was initialized: ', this.defaults.title, this.defaults.completed)
+        },
         defaults: {
             title: '',
             completed: false
