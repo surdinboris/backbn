@@ -16,9 +16,11 @@ var app = app || {};
         initialize: function () {
             //simulating template fill with in-place data
           this.todoModeltest= new app.Todo({title:'kakaModel',completed:true});
+            this.todoModeltest.set('gh','jk')
+            
          // console.log(this.todoModeltest.get('title'));
          // console.log(this.todoModeltest.get('completed'));
-            this.todoModeltest.set('gh','jk')
+
             console.log(this.todoModeltest.attributes)
           //this.$el.html( this.todoTpl(this.todoModeltest.attributes) );
           this.$el.html( this.todoTpl({title:this.todoModeltest.get('title'),completed:this.todoModeltest.get('completed')} ));
