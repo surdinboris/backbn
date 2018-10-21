@@ -23,10 +23,9 @@ var app = app || {};
             console.log('before',this.$el.html())
           this.todoModeltest= new app.Todo({title:'kakaModel',completed:true});
 
-
           this.$el.append(this.todoTpl({title:this.todoModeltest.get('title'),completed:this.todoModeltest.get('completed')} ));
             this.views=[];
-            for(var g=0; g<6; g++){
+            for(var g=0; g<60; g++){
                 let view=new app.SubView(g).el;
                 this.views.push(view)
                 this.$el.append(view);
@@ -46,21 +45,25 @@ var app = app || {};
 
     initialize: function (col) {
         console.log('init',`1080${col}`);
+        this.col=`#87${col+10}00`;
         this.subtlModeltest = new app.Subtl({subtitle:'wonderful text'});
         this.$el.append(this.subTmpl(this.subtlModeltest.attributes));
 
-        $(this.el).css("background-color",`#FF${col*18}00`);
+        $(this.el).css("background-color",this.col);
         return this
     },
     events: {
-            'mouseover': 'fontZoomed',
+        'mouseover': 'fontZoomed',
         'mouseleave': 'fontUnZoomed'
     },
         fontZoomed: function (e) {
-            this.$('p').css("font-size","larger")
+            console.log(this.col)
+            this.$('div').css("letter-spacing","4px")
+            this.$('div').css("background-color","white")
         },
         fontUnZoomed: function (e) {
-            this.$('p').css("font-size","smaller")
+            this.$('div').css("letter-spacing","0px")
+            this.$('div').css("background-color",this.col)
         }
 
 })})(jQuery);

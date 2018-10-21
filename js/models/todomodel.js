@@ -13,6 +13,7 @@ var app = app || {};
         // and ensure that each todo created has `title` and `completed` keys.
         initialize: function () {
             console.log('new model was initialized: ', this.defaults.title, this.defaults.completed)
+            console.log('bind',this.bind())
         },
         defaults: {
             title: '',
