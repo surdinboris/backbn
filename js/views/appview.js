@@ -9,23 +9,29 @@ var app = app || {};
 
     app.AppView = Backbone.View.extend({
         //dding template
-        todoTpl: _.template( $('#item-template').html() ),
+        todoTpl: _.template( $('#item-template').html()),
+
 
         el: '.todoapp',
 
         initialize: function () {
+
             //simulating template fill with in-place data
+            // console.log($(this.el),this.$el);
+            // console.log('res1',this.$('.todoapp').html());
+            // console.log('res2',$('.todoapp').html());
+            console.log('before',this.$el.html())
           this.todoModeltest= new app.Todo({title:'kakaModel',completed:true});
-            this.todoModeltest.set('gh','jk')
-            
-         // console.log(this.todoModeltest.get('title'));
-         // console.log(this.todoModeltest.get('completed'));
 
-            console.log(this.todoModeltest.attributes)
-          //this.$el.html( this.todoTpl(this.todoModeltest.attributes) );
-          this.$el.html( this.todoTpl({title:this.todoModeltest.get('title'),completed:this.todoModeltest.get('completed')} ));
 
-            $(this.el).css("background-color","red");
+          this.$el.append(this.todoTpl({title:this.todoModeltest.get('title'),completed:this.todoModeltest.get('completed')} ));
+            this.views=[];
+            for(var g=0; g<6; g++){
+                let view=new app.SubView(g).el;
+                this.views.push(view)
+                this.$el.append(view);
+            };
+            console.log(this.views)
           $('body').css({"background-color":"grey"})
 
         }
@@ -33,6 +39,31 @@ var app = app || {};
 
  })(jQuery);
 
+
+(function (){
+    app.SubView = Backbone.View.extend({
+        subTmpl: _.template($('#my-place').html()),
+
+    initialize: function (col) {
+        console.log('init',`1080${col}`);
+        this.subtlModeltest = new app.Subtl({subtitle:'wonderful text'});
+        this.$el.append(this.subTmpl(this.subtlModeltest.attributes));
+
+        $(this.el).css("background-color",`#FF${col*18}00`);
+        return this
+    },
+    events: {
+            'mouseover': 'fontZoomed',
+        'mouseleave': 'fontUnZoomed'
+    },
+        fontZoomed: function (e) {
+            this.$('p').css("font-size","larger")
+        },
+        fontUnZoomed: function (e) {
+            this.$('p').css("font-size","smaller")
+        }
+
+})})(jQuery);
 
 function old ($) {
     'use strict';

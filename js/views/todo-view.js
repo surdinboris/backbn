@@ -122,4 +122,5 @@ var app = app || {};
             this.model.destroy();
         }
     });
-})(jQuery);
+})
+//(jQuery);

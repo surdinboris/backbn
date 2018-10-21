@@ -27,3 +27,17 @@ var app = app || {};
         }
     });
 })();
+
+(function () {
+    app.Subtl = Backbone.Model.extend ({
+        defaults: {
+            subtitle: '',
+            meta: 0
+        },
+        initialize: function () {
+            console.log('Subtitle model initialized');
+
+        }
+
+    })
+})();
