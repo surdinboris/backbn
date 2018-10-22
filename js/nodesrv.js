@@ -52,6 +52,7 @@ const {stat, readdir} = require("fs").promises;
 const mime = require("mime");
 
 methods.GET = async function(request) {
+    console.log('get', request)
     let path = toFSpath(request.url);
     //console.log('toFSpath',request.url,toFSpath(request.url))
     let stats;

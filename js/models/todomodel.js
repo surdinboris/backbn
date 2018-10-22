@@ -13,7 +13,6 @@ var app = app || {};
         // and ensure that each todo created has `title` and `completed` keys.
         initialize: function () {
             console.log('new model was initialized: ', this.defaults.title, this.defaults.completed)
-            console.log('bind',this.bind())
         },
         defaults: {
             title: '',
@@ -33,10 +32,26 @@ var app = app || {};
     app.Subtl = Backbone.Model.extend ({
         defaults: {
             subtitle: '',
-            meta: 0
+            meta: 0,
+
         },
         initialize: function () {
             console.log('Subtitle model initialized');
+
+        }
+
+    })
+})();
+
+(function () {
+    app.Netc = Backbone.Model.extend ({
+        defaults: {
+            nettitle: '',
+            meta: 0,
+
+        },
+        initialize: function () {
+            console.log('Nettitle model initialized');
 
         }
 

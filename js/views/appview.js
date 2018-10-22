@@ -10,19 +10,15 @@ var app = app || {};
     app.AppView = Backbone.View.extend({
         //dding template
         todoTpl: _.template( $('#item-template').html()),
-
+        netTmpl: _.template($('#net-content').html()),
 
         el: '.todoapp',
 
         initialize: function () {
 
-            //simulating template fill with in-place data
-            // console.log($(this.el),this.$el);
-            // console.log('res1',this.$('.todoapp').html());
-            // console.log('res2',$('.todoapp').html());
-            console.log('before',this.$el.html())
           this.todoModeltest= new app.Todo({title:'kakaModel',completed:true});
-
+          //////////////////////////////add this
+            this.$el.append(this.netTmpl(netdata
           this.$el.append(this.todoTpl({title:this.todoModeltest.get('title'),completed:this.todoModeltest.get('completed')} ));
             this.views=[];
             for(var g=0; g<60; g++){
@@ -30,7 +26,7 @@ var app = app || {};
                 this.views.push(view)
                 this.$el.append(view);
             };
-            console.log(this.views)
+            //console.log(this.views)
           $('body').css({"background-color":"grey"})
 
         }
@@ -38,7 +34,10 @@ var app = app || {};
 
  })(jQuery);
 
+//view for network triggering section
 
+
+//view for wonderful content
 (function (){
     app.SubView = Backbone.View.extend({
         subTmpl: _.template($('#my-place').html()),
@@ -46,10 +45,13 @@ var app = app || {};
     initialize: function (col) {
         console.log('init',`1080${col}`);
         this.col=`#87${col+10}00`;
+        //try to retrieve this via get from node backend
         this.subtlModeltest = new app.Subtl({subtitle:'wonderful text'});
         this.$el.append(this.subTmpl(this.subtlModeltest.attributes));
-
         $(this.el).css("background-color",this.col);
+
+
+
         return this
     },
     events: {
@@ -57,7 +59,7 @@ var app = app || {};
         'mouseleave': 'fontUnZoomed'
     },
         fontZoomed: function (e) {
-            console.log(this.col)
+            //console.log(this.col)
             this.$('div').css("letter-spacing","4px")
             this.$('div').css("background-color","white")
         },
@@ -67,6 +69,30 @@ var app = app || {};
         }
 
 })})(jQuery);
+
+(function () {
+    app.networkView = Backbone.View.extend({
+
+
+        initialize: function(){
+            console.log('net-conten',$('#net-content'));
+            $('#net-content').on('mouseover', function () {
+                console.log('gggggg')
+            })
+            app.netcollect.fetch()
+        },
+        events: {
+            'mouseover': 'fetchContent'},
+
+        fetchContent: function (e) {
+            console.log('fetching')
+        }
+
+    })
+
+})(jQuery);
+
+
 
 function old ($) {
     'use strict';
