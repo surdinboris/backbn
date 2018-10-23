@@ -2,22 +2,28 @@
 //////////////creating server
 const {createServer} = require("http");
 const methods = Object.create(null);
+const RESTmethods = Object.create(null);
 
 createServer((request, response) => {
+    console.log(request.url);
+
     let handler = methods[request.method] || notAllowed;
-handler(request)
-    .catch(error => {
+    if (request.url == '/restapi') {
+        handler = RESTmethods[request.method] || notAllowed;
+    }
+    handler(request)
+        .catch(error => {
+            if (error.status != null) return error;
+            return {body: String(error), status: 500};
+        })
+        ///////{body, status = 200, type = "text/plain"} ---unpackingwith fallbacks  for object returned from handler
+        .then(({body, status = 200, type = "text/html"}) => {
+            response.writeHead(status, {"Content-Type": type});
+            if (body && body.pipe) body.pipe(response);
+            else response.end(body);
+        });
 
-    if (error.status != null) return error;
 
-return {body: String(error), status: 500};
-})
-///////{body, status = 200, type = "text/plain"} ---unpackingwith fallbacks  for object returned from handler
-.then(({body, status = 200, type = "text/html"}) => {
-response.writeHead(status, {"Content-Type": type});
-if (body && body.pipe) body.pipe(response);
-else response.end(body);
-});
 }).listen(5000);
 
 async function notAllowed(request) {
@@ -36,13 +42,22 @@ const baseDirectory = process.cwd();
 function toFSpath(url) {
     let {pathname} = parse(url);
     let path = resolve(decodeURIComponent(pathname).slice(1));
-    console.log('path',path)
+
     if (path != baseDirectory &&
         !path.startsWith(baseDirectory + sep)) {
         throw {status: 403, body: "Forbidden"};
     }
     return path;
 
+}
+RESTmethods.GET = async function(request) {
+    if (request.url == '/restapi') {
+        console.log('gett', request.url);
+        return JSON.stringify({
+            nettitle: 'gjhgfjfgfh',
+            meta: 800
+        })
+    }
 }
 
 ///GET handler for retrieving data
@@ -52,7 +67,12 @@ const {stat, readdir} = require("fs").promises;
 const mime = require("mime");
 
 methods.GET = async function(request) {
-    console.log('get', request)
+    // if(request.url == '/subtitles'){
+    //     console.log('gett', request.url);
+    //     return JSON.stringify([{nettitle: 'gjhgfjfgfh',
+    //         meta: 800}])
+    // }
+
     let path = toFSpath(request.url);
     //console.log('toFSpath',request.url,toFSpath(request.url))
     let stats;

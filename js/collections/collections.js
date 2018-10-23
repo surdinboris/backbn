@@ -14,7 +14,7 @@ var app = app || {};
         model: app.Todo,
 
         // Save all of the todo items under this example's namespace.
-       // localStorage: new Backbone.LocalStorage('todos-backbone'),
+        // localStorage: new Backbone.LocalStorage('todos-backbone'),
 
         // Filter down the list of all todo items that are finished.
         completed: function () {
@@ -39,12 +39,16 @@ var app = app || {};
     // Create our global collection of **Todos**.
     app.todos = new Todos();
 
+    //// my net collection
 
     var NetCollection = Backbone.Collection.extend({
         model: app.Netc,
-        url: '/subtitles'
+        url: '/restapi'
     });
-
+    //creating app collection in-place
     app.netcollect = new NetCollection();
-
+    //and putting demo models
+    for (var a = 0; a < 20; a++) {
+    app.netcollect.add(new app.Netc({nettitle: `network - data ${a}`, id: a}));
+}
 })();

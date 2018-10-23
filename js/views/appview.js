@@ -10,25 +10,23 @@ var app = app || {};
     app.AppView = Backbone.View.extend({
         //dding template
         todoTpl: _.template( $('#item-template').html()),
-        netTmpl: _.template($('#net-content').html()),
-
         el: '.todoapp',
 
         initialize: function () {
-
           this.todoModeltest= new app.Todo({title:'kakaModel',completed:true});
-          //////////////////////////////add this
-            this.$el.append(this.netTmpl(netdata
-          this.$el.append(this.todoTpl({title:this.todoModeltest.get('title'),completed:this.todoModeltest.get('completed')} ));
+          //adding network view element
+
+            this.$el.append(new app.networkView().el);
+
+            //adding to-do  clolored  element
+            this.$el.append(this.todoTpl({title:this.todoModeltest.get('title'),completed:this.todoModeltest.get('completed')} ));
             this.views=[];
-            for(var g=0; g<60; g++){
+            for(var g=0; g < 6; g++){
                 let view=new app.SubView(g).el;
                 this.views.push(view)
                 this.$el.append(view);
-            };
-            //console.log(this.views)
+           };
           $('body').css({"background-color":"grey"})
-
         }
     })
 
@@ -43,15 +41,11 @@ var app = app || {};
         subTmpl: _.template($('#my-place').html()),
 
     initialize: function (col) {
-        console.log('init',`1080${col}`);
         this.col=`#87${col+10}00`;
-        //try to retrieve this via get from node backend
+
         this.subtlModeltest = new app.Subtl({subtitle:'wonderful text'});
         this.$el.append(this.subTmpl(this.subtlModeltest.attributes));
-        $(this.el).css("background-color",this.col);
-
-
-
+        this.$el.css("background-color",this.col);
         return this
     },
     events: {
@@ -72,24 +66,48 @@ var app = app || {};
 
 (function () {
     app.networkView = Backbone.View.extend({
-
-
+        netTmpl: _.template($('#net-content').html()),
+        renderCounter:0,
         initialize: function(){
-            console.log('net-conten',$('#net-content'));
-            $('#net-content').on('mouseover', function () {
-                console.log('gggggg')
-            })
-            app.netcollect.fetch()
+            //initial rendering
+            this.render()
+
         },
+        //on-demand rendering
+        render: function(){
+            if(this.renderCounter == 19) {
+                this.renderCounter = 0;
+            }
+            this.renderCounter++;
+            this.netTemplateTest = app.netcollect.get(this.renderCounter) ;
+            this.$el.html('');
+            this.$el.append(this.netTmpl(this.netTemplateTest.attributes))
+            this.$el.find('p').css('background-color', 'green');
+            this.$el.find('div').css('background-color', 'beige');
+        },
+
         events: {
             'mouseover': 'fetchContent'},
-
         fetchContent: function (e) {
-            console.log('fetching')
+            //console.log(app.netcollect.pluck('nettitle'))
+            //app.netcollect.reset()
+
+            app.netcollect.fetch({
+                success: function(collection, response) {
+                    _.each(collection.models, function(model) {
+                        console.log('ok');
+                    })
+                },
+                error: function (resp) {
+                    console.log('error fetching',arguments)
+                }
+            });
+            app.netcollect.fetch();
+            //re-render
+            this.render()
+
         }
-
     })
-
 })(jQuery);
 
 
