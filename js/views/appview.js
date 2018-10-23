@@ -21,7 +21,7 @@ var app = app || {};
             //adding to-do  clolored  element
             this.$el.append(this.todoTpl({title:this.todoModeltest.get('title'),completed:this.todoModeltest.get('completed')} ));
             this.views=[];
-            for(var g=0; g < 6; g++){
+            for(var g=0; g < 60; g++){
                 let view=new app.SubView(g).el;
                 this.views.push(view)
                 this.$el.append(view);
@@ -43,14 +43,14 @@ var app = app || {};
     initialize: function (col) {
         this.col=`#87${col+10}00`;
 
-        this.subtlModeltest = new app.Subtl({subtitle:'wonderful text'});
+        this.subtlModeltest = new app.Subtl({subtitle:`wonderful text ${this.col}`});
         this.$el.append(this.subTmpl(this.subtlModeltest.attributes));
         this.$el.css("background-color",this.col);
         return this
     },
     events: {
-        'mouseover': 'fontZoomed',
-        'mouseleave': 'fontUnZoomed'
+        'click': 'fontZoomed',
+        'dblclick ': 'fontUnZoomed'
     },
         fontZoomed: function (e) {
             //console.log(this.col)
@@ -87,12 +87,13 @@ var app = app || {};
         },
 
         events: {
-            'mouseover': 'fetchContent'},
+            'click': 'fetchContent'},
         fetchContent: function (e) {
             //console.log(app.netcollect.pluck('nettitle'))
             //app.netcollect.reset()
 
             app.netcollect.fetch({
+                type: 'GET',
                 success: function(collection, response) {
                     _.each(collection.models, function(model) {
                         console.log('ok');
@@ -102,9 +103,14 @@ var app = app || {};
                     console.log('error fetching',arguments)
                 }
             });
-            app.netcollect.fetch();
+            console.log('size before',app.netcollect.size())
+            app.netcollect.fetch().then(()=> {
+                console.log('size after',app.netcollect.size())
+
+            console.log(app.netcollect.get(0))})
+
             //re-render
-            this.render()
+            //this.render()
 
         }
     })

@@ -56,7 +56,8 @@ RESTmethods.GET = async function(request) {
         console.log('gett', request.url);
         return {
             status: 200, body: `${JSON.stringify({
-                nettitle: 'gjhgfjfgfh',
+                id:0,
+                nettitle: 'kaka',
                 meta: 800
             })}`
         }
@@ -82,7 +83,7 @@ methods.GET = async function(request) {
     }
     if (stats.isDirectory()) {
         let urllist=(await readdir(path)).map((c)=>{
-            return `<a href=${request.url}${c}>${c}</a><br>`});
+            return `<a href=${request.url}/${c}>${c}</a><br>`});
 
     return {body: urllist.join("\n")};
 }
