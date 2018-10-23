@@ -50,13 +50,16 @@ function toFSpath(url) {
     return path;
 
 }
+
 RESTmethods.GET = async function(request) {
     if (request.url == '/restapi') {
         console.log('gett', request.url);
-        return JSON.stringify({
-            nettitle: 'gjhgfjfgfh',
-            meta: 800
-        })
+        return {
+            status: 200, body: `${JSON.stringify({
+                nettitle: 'gjhgfjfgfh',
+                meta: 800
+            })}`
+        }
     }
 }
 
@@ -67,12 +70,6 @@ const {stat, readdir} = require("fs").promises;
 const mime = require("mime");
 
 methods.GET = async function(request) {
-    // if(request.url == '/subtitles'){
-    //     console.log('gett', request.url);
-    //     return JSON.stringify([{nettitle: 'gjhgfjfgfh',
-    //         meta: 800}])
-    // }
-
     let path = toFSpath(request.url);
     //console.log('toFSpath',request.url,toFSpath(request.url))
     let stats;
