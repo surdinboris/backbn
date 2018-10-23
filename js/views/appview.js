@@ -78,7 +78,7 @@ var app = app || {};
 
             this.netTemplateTest = app.netcollect.get(0) ;
             this.$el.html('');
-            this.$el.append(this.netTmpl(this.netTemplateTest.attributes))
+            this.$el.append(this.netTmpl(this.netTemplateTest.attributes));
             this.$el.find('p').css('background-color', 'green');
             this.$el.find('div').css('background-color', 'beige');
         },
