@@ -57,7 +57,7 @@ RESTmethods.GET = async function(request) {
         return {
             status: 200, body: `${JSON.stringify({
                 id:0,
-                nettitle: 'kaka',
+                nettitle: 'data from node server',
                 meta: 800
             })}`
         }

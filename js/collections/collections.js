@@ -49,6 +49,6 @@ var app = app || {};
     app.netcollect = new NetCollection();
     //and putting demo models
     for (var a = 0; a < 20; a++) {
-    app.netcollect.add(new app.Netc({nettitle: `network - data ${a}`, id: a}));
+    app.netcollect.add(new app.Netc({nettitle: `client generated data ${a}`, id: a}));
 }
 })();

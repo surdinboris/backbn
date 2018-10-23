@@ -13,7 +13,7 @@ var app = app || {};
         el: '.todoapp',
 
         initialize: function () {
-          this.todoModeltest= new app.Todo({title:'kakaModel',completed:true});
+          this.todoModeltest= new app.Todo({title:'Model',completed:true});
           //adding network view element
 
             this.$el.append(new app.networkView().el);
@@ -75,11 +75,8 @@ var app = app || {};
         },
         //on-demand rendering
         render: function(){
-            if(this.renderCounter == 19) {
-                this.renderCounter = 0;
-            }
-            this.renderCounter++;
-            this.netTemplateTest = app.netcollect.get(this.renderCounter) ;
+
+            this.netTemplateTest = app.netcollect.get(0) ;
             this.$el.html('');
             this.$el.append(this.netTmpl(this.netTemplateTest.attributes))
             this.$el.find('p').css('background-color', 'green');
@@ -103,14 +100,15 @@ var app = app || {};
                     console.log('error fetching',arguments)
                 }
             });
-            console.log('size before',app.netcollect.size())
+            console.log('size before',app.netcollect.size());
             app.netcollect.fetch().then(()=> {
-                console.log('size after',app.netcollect.size())
-
-            console.log(app.netcollect.get(0))})
+                console.log('size after',app.netcollect.size());
+                console.log(app.netcollect.get(0));
+                this.render()
+            })
 
             //re-render
-            //this.render()
+
 
         }
     })
