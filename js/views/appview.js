@@ -103,7 +103,9 @@ var app = app || {};
             console.log('size before',app.netcollect.size());
             app.netcollect.fetch().then(()=> {
                 console.log('size after',app.netcollect.size());
-                console.log(app.netcollect.get(0));
+                let tobedeleted= app.netcollect.get(1);
+                console.log('tobedeleted',tobedeleted)
+                tobedeleted.destroy();
                 this.render()
             })
 

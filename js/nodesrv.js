@@ -3,29 +3,63 @@
 const {createServer} = require("http");
 const methods = Object.create(null);
 const RESTmethods = Object.create(null);
+const {parse} = require("url");
+const {resolve, sep} = require("path");
+const baseDirectory = process.cwd();
+const {rmdir,mkdir, unlink} = require("fs").promises;
+const {createWriteStream} = require("fs");
+const {createReadStream} = require("fs");
+const {stat, readdir} = require("fs").promises;
+const mime = require("mime");
 
-
+//fake DB
 let pseudoDB = [ {id:0, nettitle: 'data from node server',
     meta: 800},{id:1, nettitle: 'data from node server',
     meta: 800}];
-
-// //helper to retrieve object by ID with id attribute inside
-// function restDBget(id){
-//     let data=pseudoDB[id];
-//     let result = Object.assign({},{id:id},data);
-//     return JSON.stringify(result)
-// }
-//
-// //helper to check if url is restapi and retrieve id from request url
-function isRestURL(request){
-    let idfilter = /\/restapi$/;
-    return idfilter.test(request)
+//helpers
+async function notAllowed(request) {
+    return {
+        //status: 405,
+        body: `Method ${request.method} not allowed.`
+    };
 }
-// //test
-// console.log(isRestURL('/restapi'));
 
+//url decoding and path verifying
+function toFSpath(url) {
+    let {pathname} = parse(url);
+    let path = resolve(decodeURIComponent(pathname).slice(1));
+
+    if (path != baseDirectory &&
+        !path.startsWith(baseDirectory + sep)) {
+        throw {status: 403, body: "Forbidden"};
+    }
+    return path;
+
+}
+
+function pipeStream(from, to) {
+    return new Promise((resolve, reject) => {
+        from.on("error", reject);
+        to.on("error", reject);
+        to.on("finish", resolve);
+        from.pipe(to);
+    });
+}
+// accept urls in format '/restapi' or '/restapi/2' test:
+//console.log(isRestURL('/restapi'))
+//console.log(isRestURL('/restapi/2'))
+
+function isRestURL(request){
+    let idfilter = /\/restapi\/?(\d+)?$/;
+    let result=idfilter.exec(request);
+    if(result && result[1]) {
+        return result[1]
+    }
+    return result
+}
 
 createServer((request, response) => {
+    //console.log('node got',request.url, request.method)
     let handler = methods[request.method] || notAllowed;
     if (isRestURL(request.url)) {
         handler = RESTmethods[request.method] || notAllowed;
@@ -46,31 +80,8 @@ createServer((request, response) => {
 
 }).listen(5000);
 
-async function notAllowed(request) {
-    return {
-        //status: 405,
-        body: `Method ${request.method} not allowed.`
-    };
-}
 
-//url decoding and path verifying
-const {parse} = require("url");
-const {resolve, sep} = require("path");
-
-const baseDirectory = process.cwd();
-
-function toFSpath(url) {
-    let {pathname} = parse(url);
-    let path = resolve(decodeURIComponent(pathname).slice(1));
-
-    if (path != baseDirectory &&
-        !path.startsWith(baseDirectory + sep)) {
-        throw {status: 403, body: "Forbidden"};
-    }
-    return path;
-
-}
-
+///GET handler from REST url - without htm building things
 RESTmethods.GET = async function(request) {
     console.log('RESTmethods.GET gett', request.url);
 
@@ -80,12 +91,16 @@ RESTmethods.GET = async function(request) {
 
 };
 
-///GET handler for retrieving data
+RESTmethods.DELETE = async function(request) {
+    console.log('RESTmethods.DELETE delete', request.url);
 
-const {createReadStream} = require("fs");
-const {stat, readdir} = require("fs").promises;
-const mime = require("mime");
+    return {
+        status: 200, body: 'deleted'
+    }
 
+};
+
+///GET handler
 methods.GET = async function(request) {
 
     let path = toFSpath(request.url);
@@ -111,7 +126,6 @@ methods.GET = async function(request) {
     }
 };
 
-const {rmdir,mkdir, unlink} = require("fs").promises;
 
 methods.DELETE = async function(request) {
     let path = toFSpath(request.url);
@@ -127,31 +141,20 @@ else await unlink(path);
     return {status: 204};
 };
 
-const {createWriteStream} = require("fs");
+methods.PUT = async function(request) {
+    let path = toFSpath(request.url);
+    await pipeStream(request, createWriteStream(path));
+    return {status: 204};
+};
 
-function pipeStream(from, to) {
-    return new Promise((resolve, reject) => {
-        from.on("error", reject);
-    to.on("error", reject);
-    to.on("finish", resolve);
-    from.pipe(to);
-});
-}
-//
-// methods.PUT = async function(request) {
-//     let path = toFSpath(request.url);
-//     await pipeStream(request, createWriteStream(path));
-//     return {status: 204};
-// };
-//
-// methods.MKCOL  = async function(request) {
-//     let path = toFSpath(request.url);
-//     console.log(path);
-//     try {
-//         await mkdir(path);
-//     } catch (error) {
-//         if (error) {
-//             return {status: 404, body: "Directory already present"}}
-//     }
-//     return {status: 200, body: "Directory created sucessfully"};
-// };
+methods.MKCOL  = async function(request) {
+    let path = toFSpath(request.url);
+    console.log(path);
+    try {
+        await mkdir(path);
+    } catch (error) {
+        if (error) {
+            return {status: 404, body: "Directory already present"}}
+    }
+    return {status: 200, body: "Directory created sucessfully"};
+};
