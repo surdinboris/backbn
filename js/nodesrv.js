@@ -133,11 +133,18 @@ methods.GET = async function(request) {
         else return {status: 404, body: "File not found"};
     }
     if (stats.isDirectory()) {
-        let urllist=(await readdir(path)).map((c)=>{
-            return `<a href=${request.url}/${c}>${c}</a><br>`});
+        //console.log(request.url);
+        //fullpath to enter to  subsub levels
+        let urllist = (await readdir(path)).map((c) => {
+            //patch - avoid unnecessary '/' addidtions
+            if(request.url == "/"){
+                return `<a href=${c}>${c}</a><br>`
+            }
+            return `<a href=${request.url+"/"+c}>${c}</a><br>`
+        });
 
-    return {body: urllist.join("\n")};
-}
+        return {body: urllist.join("\n")}
+    }
     else {
         return {body: createReadStream(path),
             type: mime.getType(path)};
