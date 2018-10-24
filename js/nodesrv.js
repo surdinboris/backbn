@@ -59,12 +59,15 @@ function isRestURL(request){
 }
 
 createServer((request, response) => {
+    //Router - checking whatever its a regular request or rest api
     //console.log('node got',request.url, request.method)
     let handler = methods[request.method] || notAllowed;
+
     if (isRestURL(request.url)) {
         handler = RESTmethods[request.method] || notAllowed;
     }
 
+    //handle request with appropriate method
     handler(request)
         .catch(error => {
             if (error.status != null) return error;
@@ -89,6 +92,12 @@ RESTmethods.GET = async function(request) {
         status: 200, body: JSON.stringify(pseudoDB)
     }
 
+};
+RESTmethods.PUT = async function(request) {
+
+    return  {
+        status: 200, body: 'ok'
+    }
 };
 
 RESTmethods.DELETE = async function(request) {

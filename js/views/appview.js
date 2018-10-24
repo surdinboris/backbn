@@ -18,7 +18,7 @@ var app = app || {};
           //adding to-do  clolored  element
           this.$el.append(this.todoTpl({title:this.todoModeltest.get('title'),completed:this.todoModeltest.get('completed')} ));
           this.views=[];
-          for(var g=0; g < 60; g++){
+          for(var g=0; g < 9; g++){
             let view=new app.SubView(g).el;
             this.views.push(view);
             this.$el.append(view);
@@ -36,7 +36,7 @@ var app = app || {};
         subTmpl: _.template($('#my-place').html()),
 
         initialize: function (col) {
-        this.col=`#87${col+20}00`;
+        this.col=`#00${col}999`;
         this.subtlModeltest = new app.Subtl({subtitle:`wonderful text ${this.col}`});
         this.$el.append(this.subTmpl(this.subtlModeltest.attributes));
         this.$el.css("background-color",this.col);
@@ -70,9 +70,10 @@ var app = app || {};
         //on-demand rendering
         render: function(){
 
-            this.netTemplateTest = app.netcollect.get(0) ;
+            this.netTemplateModel = app.netcollect.get(0) ;
+            this.netTemplateModel.save();
             this.$el.html('');
-            this.$el.append(this.netTmpl(this.netTemplateTest.attributes));
+            this.$el.append(this.netTmpl(this.netTemplateModel.attributes));
             this.$el.find('p').css('background-color', 'green');
             this.$el.find('div').css('background-color', 'beige');
         },
