@@ -4,13 +4,33 @@ const {createServer} = require("http");
 const methods = Object.create(null);
 const RESTmethods = Object.create(null);
 
-createServer((request, response) => {
-    console.log(request.url);
 
+let pseudoDB = [ {id:0, nettitle: 'data from node server',
+    meta: 800},{id:1, nettitle: 'data from node server',
+    meta: 800}];
+
+// //helper to retrieve object by ID with id attribute inside
+// function restDBget(id){
+//     let data=pseudoDB[id];
+//     let result = Object.assign({},{id:id},data);
+//     return JSON.stringify(result)
+// }
+//
+// //helper to check if url is restapi and retrieve id from request url
+function isRestURL(request){
+    let idfilter = /\/restapi$/;
+    return idfilter.test(request)
+}
+// //test
+// console.log(isRestURL('/restapi'));
+
+
+createServer((request, response) => {
     let handler = methods[request.method] || notAllowed;
-    if (request.url == '/restapi') {
+    if (isRestURL(request.url)) {
         handler = RESTmethods[request.method] || notAllowed;
     }
+
     handler(request)
         .catch(error => {
             if (error.status != null) return error;
@@ -52,17 +72,13 @@ function toFSpath(url) {
 }
 
 RESTmethods.GET = async function(request) {
-    if (request.url == '/restapi') {
-        console.log('gett', request.url);
-        return {
-            status: 200, body: `${JSON.stringify({
-                id:0,
-                nettitle: 'data from node server',
-                meta: 800
-            })}`
-        }
+    console.log('RESTmethods.GET gett', request.url);
+
+    return {
+        status: 200, body: JSON.stringify(pseudoDB)
     }
-}
+
+};
 
 ///GET handler for retrieving data
 
@@ -71,13 +87,15 @@ const {stat, readdir} = require("fs").promises;
 const mime = require("mime");
 
 methods.GET = async function(request) {
+
     let path = toFSpath(request.url);
+
     //console.log('toFSpath',request.url,toFSpath(request.url))
     let stats;
     try {
         stats = await stat(path);
     } catch (error) {
-        console.log(error);
+        //console.log(error);
         if (error.code != "ENOENT") throw error;
         else return {status: 404, body: "File not found"};
     }

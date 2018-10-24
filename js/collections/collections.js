@@ -43,7 +43,7 @@ var app = app || {};
 
     var NetCollection = Backbone.Collection.extend({
         model: app.Netc,
-        url: '/restapi'
+        url: '/restapi' //to fetch collection id harcoded - 0 - dedicated to NetCollection
     });
     //creating app collection in-place
     app.netcollect = new NetCollection();
