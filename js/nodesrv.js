@@ -93,7 +93,16 @@ RESTmethods.GET = async function(request) {
 
 RESTmethods.DELETE = async function(request) {
     console.log('RESTmethods.DELETE delete', request.url);
-
+    let id = isRestURL(request.url);
+    let index = -1;
+    pseudoDB.forEach(record=> {
+    if(record.id == id){
+        index= pseudoDB.indexOf(record)
+    }});
+    if(index > -1){
+         pseudoDB.splice(index,1)
+    }
+        console.log(pseudoDB)
     return {
         status: 200, body: 'deleted'
     }
