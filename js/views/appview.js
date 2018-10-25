@@ -14,17 +14,15 @@ var app = app || {};
         render: function(){
             this.$el.html('');
             this.collection = app.netcollect.toJSON();
-
             this.collection.forEach(netTemplateModel=> {
-                //this.netTemplateModel = app.netcollect.get(0);
-                //this.netTemplateModel.save();
-
-                this.$el.append(this.netTmpl(netTemplateModel));
-                this.$el.find('button').css('background-color', 'gold');
-                this.$el.find(".destroy").on('click', this.removeFromAll);
-                this.$el.find(".refresh").on('click', this.fetchContent);
-                this.$el.find(".save").on('click', this.saveToAll);
-                this.$el.find('p').css('background-color', 'beige');
+            //this.netTemplateModel = app.netcollect.get(0);
+            //this.netTemplateModel.save();
+            this.$el.append(this.netTmpl(netTemplateModel));
+            this.$el.find('button').css('background-color', 'gold');
+            this.$el.find(".destroy").on('click', this.removeFromAll);
+            this.$el.find(".refresh").on('click', this.fetchContent);
+            this.$el.find(".save").on('click', this.saveToAll);
+            this.$el.find('p').css('background-color', 'beige');
             })
         },
 
@@ -32,7 +30,6 @@ var app = app || {};
         //     'click': 'fetchContent' },
 
         fetchContent: async function (e) {
-          
             await  app.netcollect.fetch({
                 type: 'GET',
                 success: function(collection, response) {
@@ -44,18 +41,21 @@ var app = app || {};
                     console.log('error fetching',arguments)
                 }
             });
-            // console.log('size before',app.netcollect.size());
-            // app.netcollect.fetch().then(()=> {
-            //     console.log('size after',app.netcollect.size());
-            //     let tobedeleted= app.netcollect.get(1);
-            //     tobedeleted.destroy();
-            //
-            //     this.render()
-            // })
+
         },
 
-        removeFromAll: function(e){
-            console.log(e.id)
+        removeFromAll: function(){
+            //console.log('size before',app.netcollect.size());
+            this.tobedeleted = app.netcollect.get(0);
+            console.log(this.tobedeleted);
+            //itsf failing due to no difference between two view objects that has
+            //binded to same event listener
+            this.fetchContent;
+            //initial rendering
+            this.render
+
+
+
         },
 
         saveToAll: function(e){
