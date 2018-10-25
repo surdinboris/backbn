@@ -27,7 +27,7 @@ function updateDB(rec) {
     });
     if(index > -1){
         pseudoDB.splice(index,1);
-        pseudoDB.push(rec)
+        pseudoDB.push(rec);
         console.log('pseudoDB updated', pseudoDB)
     }
 }
@@ -124,6 +124,20 @@ RESTmethods.PUT = async function(request) {
     }
 };
 
+RESTmethods.PATCH = async function (request) {
+    var responseString = "";
+    request.on("data", function (data) {
+        responseString += data;
+    });
+    request.on("end", function () {
+        console.log(JSON.parse(responseString));
+        //appending to model
+        //updateDB(JSON.parse(responseString));
+    });
+    return {
+        status: 200, body: 'ok'   }
+    };
+
 RESTmethods.DELETE = async function(request) {
     console.log('RESTmethods.DELETE delete', request.url);
     let id = isRestURL(request.url);
@@ -137,7 +151,7 @@ RESTmethods.DELETE = async function(request) {
     }
         console.log(pseudoDB)
     return {
-        status: 200, body: 'deleted'
+        status: 200, body: 'ok'
     }
 
 };
