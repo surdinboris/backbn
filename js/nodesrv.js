@@ -16,6 +16,21 @@ const mime = require("mime");
 let pseudoDB = [ {id:0, nettitle: 'data from node server',
     meta: 800},{id:1, nettitle: 'data from node server',
     meta: 800}];
+
+function updateDB(rec) {
+    let updId=rec.id;
+    let index= -1;
+    pseudoDB.forEach(rec=>{
+      if(rec.id == updId){
+          index=pseudoDB.indexOf(rec)
+      }
+    });
+    if(index > -1){
+        pseudoDB.splice(index,1);
+        pseudoDB.push(rec)
+        console.log('pseudoDB updated', pseudoDB)
+    }
+}
 //helpers
 async function notAllowed(request) {
     return {
@@ -60,7 +75,7 @@ function isRestURL(request){
 
 createServer((request, response) => {
     //Router - checking whatever its a regular request or rest api
-    //console.log('node got',request.url, request.method)
+    console.log('node got',request.url, request.method)
     let handler = methods[request.method] || notAllowed;
 
     if (isRestURL(request.url)) {
@@ -94,6 +109,15 @@ RESTmethods.GET = async function(request) {
 
 };
 RESTmethods.PUT = async function(request) {
+    var responseString = "";
+    request.on("data", function (data) {
+        responseString += data;
+    });
+    request.on("end", function () {
+        //console.log(JSON.parse(responseString));
+        //appending to model
+        updateDB(JSON.parse(responseString));
+    });
 
     return  {
         status: 200, body: 'ok'
@@ -152,34 +176,34 @@ methods.GET = async function(request) {
 };
 
 
-methods.DELETE = async function(request) {
-    let path = toFSpath(request.url);
-    let stats;
-    try {
-        stats = await stat(path);
-    } catch (error) {
-        if (error.code != "ENOENT") throw error;
-        else return {status: 204};
-    }
-    if (stats.isDirectory()) await rmdir(path);
-else await unlink(path);
-    return {status: 204};
-};
-
-methods.PUT = async function(request) {
-    let path = toFSpath(request.url);
-    await pipeStream(request, createWriteStream(path));
-    return {status: 204};
-};
-
-methods.MKCOL  = async function(request) {
-    let path = toFSpath(request.url);
-    console.log(path);
-    try {
-        await mkdir(path);
-    } catch (error) {
-        if (error) {
-            return {status: 404, body: "Directory already present"}}
-    }
-    return {status: 200, body: "Directory created sucessfully"};
-};
+// methods.DELETE = async function(request) {
+//     let path = toFSpath(request.url);
+//     let stats;
+//     try {
+//         stats = await stat(path);
+//     } catch (error) {
+//         if (error.code != "ENOENT") throw error;
+//         else return {status: 204};
+//     }
+//     if (stats.isDirectory()) await rmdir(path);
+// else await unlink(path);
+//     return {status: 204};
+// };
+//
+// methods.PUT = async function(request) {
+//     let path = toFSpath(request.url);
+//     await pipeStream(request, createWriteStream(path));
+//     return {status: 204};
+// };
+//
+// methods.MKCOL  = async function(request) {
+//     let path = toFSpath(request.url);
+//     console.log(path);
+//     try {
+//         await mkdir(path);
+//     } catch (error) {
+//         if (error) {
+//             return {status: 404, body: "Directory already present"}}
+//     }
+//     return {status: 200, body: "Directory created sucessfully"};
+// };
