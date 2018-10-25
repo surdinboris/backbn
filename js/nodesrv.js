@@ -13,8 +13,8 @@ const {stat, readdir} = require("fs").promises;
 const mime = require("mime");
 
 //fake DB
-let pseudoDB = [ {id:0, nettitle: 'data from node server',
-    meta: 800},{id:1, nettitle: 'data from node server',
+let pseudoDB = [ {id:0, nettitle: 'data from node server one',
+    meta: 800},{id:1, nettitle: 'data from node server two',
     meta: 800}];
 
 function updateDB(rec) {

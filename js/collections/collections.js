@@ -45,10 +45,11 @@ var app = app || {};
         model: app.Netc,
         url: '/restapi' //to fetch/dmanipulate with collection
     });
-    //creating app collection in-place
+    //creating app collection based on server data
     app.netcollect = new NetCollection();
+
     //and putting demo models
-    for (var a = 0; a < 20; a++) {
-    app.netcollect.add(new app.Netc({nettitle: `client generated data ${a}`, id: a}));
-}
+//     for (var a = 0; a < 20; a++) {
+//     app.netcollect.add(new app.Netc({nettitle: `client generated data ${a}`, id: a}));
+// }
 })();

@@ -6,32 +6,33 @@
 </head>
 <body>
 <p>Backbone /JS</p>
-
+RESTful
 <section class="todoapp">
 
 
 
 <script type="text/template" id="net-content">
-    RESTful
-
-    <div><%= nettitle %></div>
-    <p><%= nettitle %></p>
+    <p><%= nettitle+' '+id %></p>
+    <input class="edit" value="<%= nettitle %>">
+    <button class="save"> save </button>
+    <button class="destroy"> delete </button>
+    <button class="refresh"> refresh  </button>
 
 </script>
-
 
 <script type="text/template" id="my-place">
     <div><%= subtitle %></div>
 
 </script>
+    <!-- Main view -->
 
-<script type="text/template" id="item-template">
-    <div class="view">
-        <input id="todo_complete" type="checkbox" <%= completed ? 'checked="checked"' : '' %> />
-        <label><%= title %></label>
-        <button class="destroy"> start </button>
+    <script type="text/template" id="item-template">
+        <div class="view">
+            <!--<input id="todo_complete" type="checkbox" <%= completed ? 'checked="checked"' : '' %> />-->
+        <!--<label><%= title %></label>-->
+
     </div>
-    <input class="edit" value="<%= title %>">
+
 </script>
 
 </section>

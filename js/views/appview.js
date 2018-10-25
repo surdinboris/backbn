@@ -1,13 +1,103 @@
 /*global Backbone, jQuery, _, ENTER_KEY */
-
-//garbage/testing view
-
 var app = app || {};
 
+(function () {
+    app.networkView = Backbone.View.extend({
+        netTmpl: _.template($('#net-content').html()),
+        //renderCounter:0,
+        initialize: async function(){
+            await this.fetchContent();
+            //initial rendering
+            this.render()
+        },
+        //on-demand rendering
+        render: function(){
+            this.$el.html('');
+            this.collection = app.netcollect.toJSON();
+
+            this.collection.forEach(netTemplateModel=> {
+                //this.netTemplateModel = app.netcollect.get(0);
+                //this.netTemplateModel.save();
+
+                this.$el.append(this.netTmpl(netTemplateModel));
+                this.$el.find('button').css('background-color', 'gold');
+                this.$el.find(".destroy").on('click', this.removeFromAll);
+                this.$el.find(".refresh").on('click', this.fetchContent);
+                this.$el.find(".save").on('click', this.saveToAll);
+                this.$el.find('p').css('background-color', 'beige');
+            })
+        },
+
+        // events: {
+        //     'click': 'fetchContent' },
+
+        fetchContent: async function (e) {
+          
+            await  app.netcollect.fetch({
+                type: 'GET',
+                success: function(collection, response) {
+                    _.each(collection.models, function(model) {
+                        console.log('ok');
+                    })
+                },
+                error: function (resp) {
+                    console.log('error fetching',arguments)
+                }
+            });
+            // console.log('size before',app.netcollect.size());
+            // app.netcollect.fetch().then(()=> {
+            //     console.log('size after',app.netcollect.size());
+            //     let tobedeleted= app.netcollect.get(1);
+            //     tobedeleted.destroy();
+            //
+            //     this.render()
+            // })
+        },
+
+        removeFromAll: function(e){
+            console.log(e.id)
+        },
+
+        saveToAll: function(e){
+            console.log(e.id)
+        }
+})
+})(jQuery);
+//view for wonderful text
+
+(function (){
+    app.SubView = Backbone.View.extend({
+
+        subTmpl: _.template($('#my-place').html()),
+
+        initialize: function (col) {
+            this.col=`#00${col}999`;
+            this.subtlModeltest = new app.Subtl({subtitle:`wonderful text ${this.col}`});
+            this.$el.append(this.subTmpl(this.subtlModeltest.attributes));
+            this.$el.css("background-color",this.col);
+            return this
+        },
+        events: {
+            'click': 'fontZoomed',
+            'dblclick ': 'fontUnZoomed'
+        },
+        fontZoomed: function (e) {
+            //console.log(this.col)
+            this.$('div').css("letter-spacing","4px")
+            this.$('div').css("background-color","white")
+        },
+        fontUnZoomed: function (e) {
+            this.$('div').css("letter-spacing","0px")
+            this.$('div').css("background-color",this.col)
+        }
+
+    })})(jQuery);
+
+//main view with subviews
 (function ($) {
     'use strict';
     app.AppView = Backbone.View.extend({
-        //dding template
+        //adding template
         todoTpl: _.template( $('#item-template').html()),
         el: '.todoapp',
         initialize: function () {
@@ -16,7 +106,7 @@ var app = app || {};
           this.$el.append(new app.networkView().el);
 
           //adding to-do  clolored  element
-          this.$el.append(this.todoTpl({title:this.todoModeltest.get('title'),completed:this.todoModeltest.get('completed')} ));
+          //this.$el.append(this.todoTpl({title:this.todoModeltest.get('title'),completed:this.todoModeltest.get('completed')} ));
           this.views=[];
           for(var g=0; g < 9; g++){
             let view=new app.SubView(g).el;
@@ -29,83 +119,7 @@ var app = app || {};
 
  })(jQuery);
 
-//view for network triggering section
-(function (){
-    app.SubView = Backbone.View.extend({
 
-        subTmpl: _.template($('#my-place').html()),
-
-        initialize: function (col) {
-        this.col=`#00${col}999`;
-        this.subtlModeltest = new app.Subtl({subtitle:`wonderful text ${this.col}`});
-        this.$el.append(this.subTmpl(this.subtlModeltest.attributes));
-        this.$el.css("background-color",this.col);
-        return this
-    },
-    events: {
-        'click': 'fontZoomed',
-        'dblclick ': 'fontUnZoomed'
-    },
-        fontZoomed: function (e) {
-            //console.log(this.col)
-            this.$('div').css("letter-spacing","4px")
-            this.$('div').css("background-color","white")
-        },
-        fontUnZoomed: function (e) {
-            this.$('div').css("letter-spacing","0px")
-            this.$('div').css("background-color",this.col)
-        }
-
-})})(jQuery);
-
-(function () {
-    app.networkView = Backbone.View.extend({
-        netTmpl: _.template($('#net-content').html()),
-        renderCounter:0,
-        initialize: function(){
-            //initial rendering
-            this.render()
-
-        },
-        //on-demand rendering
-        render: function(){
-
-            this.netTemplateModel = app.netcollect.get(0) ;
-            this.netTemplateModel.save();
-            this.$el.html('');
-            this.$el.append(this.netTmpl(this.netTemplateModel.attributes));
-            this.$el.find('p').css('background-color', 'green');
-            this.$el.find('div').css('background-color', 'beige');
-        },
-
-        events: {
-            'click': 'fetchContent'},
-        fetchContent: function (e) {
-            //console.log(app.netcollect.pluck('nettitle'))
-            //app.netcollect.reset()
-
-            app.netcollect.fetch({
-                type: 'GET',
-                success: function(collection, response) {
-                    _.each(collection.models, function(model) {
-                        console.log('ok');
-                    })
-                },
-                error: function (resp) {
-                    console.log('error fetching',arguments)
-                }
-            });
-            console.log('size before',app.netcollect.size());
-            app.netcollect.fetch().then(()=> {
-                console.log('size after',app.netcollect.size());
-                let tobedeleted= app.netcollect.get(1);
-                tobedeleted.destroy();
-
-                this.render()
-            })
-        }
-    })
-})(jQuery);
 
 
 //
