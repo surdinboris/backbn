@@ -12,11 +12,11 @@ RESTful
 
 
 <script type="text/template" id="net-content">
-    <p><%= nettitle+' '+id %></p>
-    <input class="edit" value="<%= nettitle %>">
-    <button class="save"> save </button>
-    <button class="destroy"> delete </button>
-    <button class="refresh"> refresh  </button>
+    <p id="<%= id %>"><%= nettitle+' '+id %></p>
+    <input class="edit" id="<%= id %>" value="<%= nettitle %>">
+    <button class="save" id="<%= id %>"> save </button>
+    <button class="destroy" id="<%= id %>" > delete </button>
+    <button class="refresh" id="<%= id %>"> refresh  </button>
 
 </script>
 

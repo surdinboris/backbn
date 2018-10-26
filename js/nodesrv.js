@@ -14,8 +14,19 @@ const mime = require("mime");
 
 //fake DB
 let pseudoDB = [ {id:0, nettitle: 'data from node server one',
-    meta: 800},{id:1, nettitle: 'data from node server two',
+    meta: 800}
+    ,{id:1, nettitle: 'data from node server two',
+    meta: 800},{id:2, nettitle: 'data from node server three',
     meta: 800}];
+
+function isRestURL(request){
+    let idfilter = /\/restapi\/?(\d+)?$/;
+    let result=idfilter.exec(request);
+    if(result && result[1]) {
+        return result[1]
+    }
+    return result
+}
 
 function updateDB(rec) {
     let updId=rec.id;
@@ -64,14 +75,6 @@ function pipeStream(from, to) {
 //console.log(isRestURL('/restapi'))
 //console.log(isRestURL('/restapi/2'))
 
-function isRestURL(request){
-    let idfilter = /\/restapi\/?(\d+)?$/;
-    let result=idfilter.exec(request);
-    if(result && result[1]) {
-        return result[1]
-    }
-    return result
-}
 
 createServer((request, response) => {
     //Router - checking whatever its a regular request or rest api

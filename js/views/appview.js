@@ -5,31 +5,64 @@ var app = app || {};
     app.networkView = Backbone.View.extend({
         netTmpl: _.template($('#net-content').html()),
         //renderCounter:0,
+        events: {
+            "click .destroy": function (ev) {
+                let id=$(ev.target).attr('id')
+                //do whatever you want with id
+                this.removeFromAll(id)
+            },
+
+            "click .refresh": function (ev) {
+                //partial update?
+                let id=$(ev.target).attr('id')
+
+            },
+            "click .save": function (ev) {
+                let id=$(ev.target).attr('id')
+                //when typing - store text  in local model id  and save it
+                // on server when sace is pressed
+            },
+            "click .save": function (ev) {
+                let id=$(ev.target).attr('id')
+                //when typing - store text  in local model id  and save it
+                // on server when sace is pressed
+            },
+            // "click": function (ev) {
+            //     let id=$(ev.target).attr('id')
+            //     console.log(' this click', id)
+            // },
+        },
+
         initialize: async function(){
             await this.fetchContent();
-            //initial rendering
+           //console.log(' this.events',  this.events)
             this.render()
+
         },
         //on-demand rendering
         render: function(){
             this.$el.html('');
             this.collection = app.netcollect.toJSON();
             this.collection.forEach(netTemplateModel=> {
-            //this.netTemplateModel = app.netcollect.get(0);
+            console.log('netTemplateModel',netTemplateModel)
+                //this.netTemplateModel = app.netcollect.get(0);
             //this.netTemplateModel.save();
             this.$el.append(this.netTmpl(netTemplateModel));
+                //assigning attr  to destroy button
+            //this.$el.find(".destroy").text(netTemplateModel.id);
             this.$el.find('button').css('background-color', 'gold');
-            this.$el.find(".destroy").on('click', this.removeFromAll);
-            this.$el.find(".refresh").on('click', this.fetchContent);
-            this.$el.find(".save").on('click', this.saveToAll);
+            //this.$el.find(".destroy").on('click',function (kk) { console.log(kk,this)
+            //});
+             //this.$el.find(".refresh").on('click', this.fetchContent);
+            //this.$el.find(".save").on('click', this.saveToAll);
             this.$el.find('p').css('background-color', 'beige');
             })
         },
 
-        // events: {
-        //     'click': 'fetchContent' },
 
-        fetchContent: async function (e) {
+        fetchContent: async function (id) {
+            //may be partial with id??
+
             await  app.netcollect.fetch({
                 type: 'GET',
                 success: function(collection, response) {
@@ -43,16 +76,22 @@ var app = app || {};
             });
 
         },
+//////////////maybe remove and r4efresh methods should be implemented in child views?
+        removeFromAll: async function(id){
+            //this == button?????
 
-        removeFromAll: function(){
+           // await this.fetchContent();
+            //this.render();
             //console.log('size before',app.netcollect.size());
-            this.tobedeleted = app.netcollect.get(0);
-            console.log(this.tobedeleted);
-            //itsf failing due to no difference between two view objects that has
-            //binded to same event listener
-            this.fetchContent;
+             this.tobedeleted = app.netcollect.get(id);
+             console.log(this.tobedeleted);
+          //   //itsf failing due to no difference between two view objects that has
+          //   //binded to same event listener
+           this.tobedeleted.destroy();
+           this.fetchContent();
+            this.render()
             //initial rendering
-            this.render
+
 
 
 
@@ -100,6 +139,16 @@ var app = app || {};
         //adding template
         todoTpl: _.template( $('#item-template').html()),
         el: '.todoapp',
+
+
+//this works!!! the pro
+//         events: {
+//             "click .destroy": "transitionUp",
+//             "click .refresh": function () {
+//                 console.log(this, 'appview top event')
+//             },
+//         },
+
         initialize: function () {
           this.todoModeltest= new app.Todo({title:'Model',completed:true});
           //adding network view element
