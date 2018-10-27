@@ -6,21 +6,32 @@ var app = app || {};
 
     // Todo Router
     // ----------
-    var TodoRouter = Backbone.Router.extend({
+    var rRouter = Backbone.Router.extend({
         routes: {
-            '*filter': 'setFilter'
+            //'': 'index',
+            'edit/:id':'about'
+
         },
 
-        setFilter: function (param) {
-            // Set the current filter to be used
-            app.TodoFilter = param || '';
-
-            // Trigger a collection filter event, causing hiding/unhiding
-            // of Todo view items
-            app.todos.trigger('filter');
+        edit: function (id) {
+            //console.log('about');
+            alert(id)
+        },
+        index: function () {
+            console.log('index');
+            alert('index best app')
         }
+        // setFilter: function (param) {
+        //     // Set the current filter to be used
+        //     app.TodoFilter = param || '';
+        //
+        //     // Trigger a collection filter event, causing hiding/unhiding
+        //     // of Todo view items
+        //     //app.todos.trigger('filter');
+        //}
     });
 
-    app.TodoRouter = new TodoRouter();
+    app.oRouter = new rRouter();
+
     Backbone.history.start();
 })();

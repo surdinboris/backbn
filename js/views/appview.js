@@ -6,6 +6,11 @@ var app = app || {};
         netTmpl: _.template($('#net-content').html()),
         //renderCounter:0,
         events: {
+            'click': 'clicked',
+            //
+            // // 'click ': function () {
+            // //     console.log('dom', this)
+            // // },
             "click .destroy": function (ev) {
                 let id=$(ev.target).attr('id')
                 //do whatever you want with id
@@ -18,12 +23,23 @@ var app = app || {};
 
             },
             "click .save": function (ev) {
-                let id=$(ev.target).attr('id')
+                let id=$(ev.target).attr('id');
+                let model=app.netcollect.get(id)
+                model.save();
                 //when typing - store text  in local model id  and save it
                 // on server when sace is pressed
             },
-            "click .save": function (ev) {
-                let id=$(ev.target).attr('id')
+            "focus .edit": function(ev){
+                console.log('focus',ev.target.id)
+                app.oRouter.navigate("/edit"+ev.target.id, {trigger: true})
+
+            },
+            "keyup .edit": function (ev) {
+                let id=$(ev.target).attr('id');
+                let text=$(ev.target).val();
+                app.netcollect.set({id:id, nettitle: text})
+
+
                 //when typing - store text  in local model id  and save it
                 // on server when sace is pressed
             },
@@ -32,12 +48,32 @@ var app = app || {};
             //     console.log(' this click', id)
             // },
         },
+        // 'this' is view
+        // clicked:  function(event) {
+        //    this.trigger('apiEvent', event.target);
+        //    console.log(this);
+        //},
 
-        initialize: async function(){
-            await this.fetchContent();
-           //console.log(' this.events',  this.events)
+        // 'this' is handling DOM element
+
+        jqueryClicked: function(event) {
+            console.log(this);
+        },
+
+        callback: function(eventType) {
+            console.log("event type was " + eventType);
+        }
+,
+        initialize:  function(){
+            this.fetchContent().then(()=>{
+                // bind to DOM event using jQuery
+           //this.$el.click(this.jqueryClicked);
+                //app.oRouter.navigate("#about")
+                // bind to API event
+            //this.on('apiEvent', this.callback);
+            //console.log(' this.events',  this.events)
             this.render()
-
+        })
         },
         //on-demand rendering
         render: function(){
@@ -56,6 +92,7 @@ var app = app || {};
              //this.$el.find(".refresh").on('click', this.fetchContent);
             //this.$el.find(".save").on('click', this.saveToAll);
             this.$el.find('p').css('background-color', 'beige');
+
             })
         },
 
@@ -89,12 +126,8 @@ var app = app || {};
           //   //binded to same event listener
            this.tobedeleted.destroy();
            this.fetchContent();
-            this.render()
+           this.render()
             //initial rendering
-
-
-
-
         },
 
         saveToAll: function(e){
