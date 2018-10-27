@@ -31,7 +31,7 @@ var app = app || {};
             },
             "focus .edit": function(ev){
                 console.log('focus',ev.target.id)
-                app.oRouter.navigate("/edit"+ev.target.id, {trigger: true})
+                app.oRouter.navigate("edit/"+ev.target.id, {trigger:true})
 
             },
             "keyup .edit": function (ev) {

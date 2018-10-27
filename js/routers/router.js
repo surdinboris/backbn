@@ -9,13 +9,16 @@ var app = app || {};
     var rRouter = Backbone.Router.extend({
         routes: {
             //'': 'index',
-            'edit/:id':'about'
+            'edit/:id':'edit'
 
         },
 
         edit: function (id) {
-            //console.log('about');
-            alert(id)
+            //focusing on target element via 
+            let target=('events el',$(`input[id="${id}"]`));
+            target.focus()
+
+            //alert('you are edit data cell#'+ id)
         },
         index: function () {
             console.log('index');
