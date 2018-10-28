@@ -37,8 +37,8 @@ function updateDB(rec) {
       }
     });
     if(index > -1){
-        pseudoDB.splice(index,1);
-        pseudoDB.push(rec);
+        pseudoDB.splice(index,1,rec);
+       // pseudoDB.push(rec);
         console.log('pseudoDB updated', pseudoDB)
     }
 }

@@ -12,7 +12,7 @@ var app = app || {};
             // //     console.log('dom', this)
             // // },
             "click .destroy": function (ev) {
-                let id=$(ev.target).attr('id')
+                let id=$(ev.target).attr('id');
                 //do whatever you want with id
                 this.removeFromAll(id)
             },
@@ -23,19 +23,19 @@ var app = app || {};
 
             },
             "click .save": function (ev) {
-                let id=$(ev.target).attr('id');
-                let model=app.netcollect.get(id)
+                let id=parseInt($(ev.target).attr('id'));
+                let model=app.netcollect.get(id);
                 model.save();
                 //when typing - store text  in local model id  and save it
                 // on server when sace is pressed
             },
             "focus .edit": function(ev){
-                console.log('focus',ev.target.id)
+                console.log('focus',ev.target.id);
                 app.oRouter.navigate("edit/"+ev.target.id, {trigger:true})
 
             },
             "keyup .edit": function (ev) {
-                let id=$(ev.target).attr('id');
+                let id=parseInt($(ev.target).attr('id'));
                 let text=$(ev.target).val();
                 app.netcollect.set({id:id, nettitle: text})
 
@@ -53,13 +53,10 @@ var app = app || {};
         //    this.trigger('apiEvent', event.target);
         //    console.log(this);
         //},
-
         // 'this' is handling DOM element
-
         jqueryClicked: function(event) {
             console.log(this);
         },
-
         callback: function(eventType) {
             console.log("event type was " + eventType);
         }
@@ -67,7 +64,7 @@ var app = app || {};
         initialize:  function(){
             this.fetchContent().then(()=>{
                 // bind to DOM event using jQuery
-           //this.$el.click(this.jqueryClicked);
+                // this.$el.click(this.jqueryClicked);
                 //app.oRouter.navigate("#about")
                 // bind to API event
             //this.on('apiEvent', this.callback);
@@ -79,6 +76,8 @@ var app = app || {};
         render: function(){
             this.$el.html('');
             this.collection = app.netcollect.toJSON();
+            console.log('this.collection',this.collection)
+
             this.collection.forEach(netTemplateModel=> {
             console.log('netTemplateModel',netTemplateModel)
                 //this.netTemplateModel = app.netcollect.get(0);
@@ -92,14 +91,10 @@ var app = app || {};
              //this.$el.find(".refresh").on('click', this.fetchContent);
             //this.$el.find(".save").on('click', this.saveToAll);
             this.$el.find('p').css('background-color', 'beige');
-
             })
         },
-
-
         fetchContent: async function (id) {
             //may be partial with id??
-
             await  app.netcollect.fetch({
                 type: 'GET',
                 success: function(collection, response) {
@@ -115,10 +110,9 @@ var app = app || {};
         },
 //////////////maybe remove and r4efresh methods should be implemented in child views?
         removeFromAll: async function(id){
-            //this == button?????
-
-           // await this.fetchContent();
-            //this.render();
+               //this == button?????
+              // await this.fetchContent();
+             //this.render();
             //console.log('size before',app.netcollect.size());
              this.tobedeleted = app.netcollect.get(id);
              console.log(this.tobedeleted);
