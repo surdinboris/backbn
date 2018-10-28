@@ -54,6 +54,7 @@ var app = app || {};
         //    console.log(this);
         //},
         // 'this' is handling DOM element
+
         jqueryClicked: function(event) {
             console.log(this);
         },
@@ -76,10 +77,14 @@ var app = app || {};
         render: function(){
             this.$el.html('');
             this.collection = app.netcollect.toJSON();
-            console.log('this.collection',this.collection)
+            this.sorted=app.netcollect.sortBy(function (el) {
+                return el.get('nettitle')
+            });
+            console.log('sorted',app.netcollect, this.sorted);
 
-            this.collection.forEach(netTemplateModel=> {
-            console.log('netTemplateModel',netTemplateModel)
+            //this.collection.forEach(netTemplateModel=> {
+              this.sorted.forEach(netTemplateModel=> {
+            //console.log('netTemplateModel',netTemplateModel)
                 //this.netTemplateModel = app.netcollect.get(0);
             //this.netTemplateModel.save();
             this.$el.append(this.netTmpl(netTemplateModel));
