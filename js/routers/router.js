@@ -14,12 +14,14 @@ var app = app || {};
         },
 
         edit: function (id) {
-            //focusing on target element via 
-            let target=('events el',$(`input[id="${id}"]`));
-            target.focus()
+        $(document).ready(function(){
+            $(`.toggled`).hide()
+            this.target=$(`.toggled[id=${id}]`);
+            console.log(this.target)
+            this.target.toggle()
+        })},
 
-            //alert('you are edit data cell#'+ id)
-        },
+
         index: function () {
             console.log('index');
             alert('index best app')
@@ -33,8 +35,7 @@ var app = app || {};
         //     //app.todos.trigger('filter');
         //}
     });
-
     app.oRouter = new rRouter();
-
     Backbone.history.start();
 })();
+

@@ -7,6 +7,14 @@ var app = app || {};
         //renderCounter:0,
         events: {
             'click': 'clicked',
+            'click .editButton': function (ev) {
+                let id=ev.target.id;
+                console.log(id)
+                this.$el.find(`.toggled[id="${id}"]`).toggle('slow');
+                //this.$el.find('.toggle')
+            },
+
+     //   });
             //
             // // 'click ': function () {
             // //     console.log('dom', this)
@@ -15,6 +23,7 @@ var app = app || {};
                 let id=$(ev.target).attr('id');
                 //do whatever you want with id
                 this.removeFromAll(id)
+                app.oRouter.navigate("")
             },
 
             "click .refresh": function (ev) {
@@ -30,7 +39,7 @@ var app = app || {};
                 // on server when sace is pressed
             },
             "focus .edit": function(ev){
-                console.log('focus',ev.target.id);
+
                 app.oRouter.navigate("edit/"+ev.target.id, {trigger:true})
 
             },
@@ -75,27 +84,35 @@ var app = app || {};
         },
         //on-demand rendering
         render: function(){
+            console.log('toberendered', app.netcollect)
             this.$el.html('');
-            this.collection = app.netcollect.toJSON();
-            this.sorted=app.netcollect.sortBy(function (el) {
-                return el.get('nettitle')
-            });
-            console.log('sorted',app.netcollect, this.sorted);
 
-            //this.collection.forEach(netTemplateModel=> {
+            //this.collection = app.netcollect.toJSON();
+            //sorting:
+            this.sorted = app.netcollect.sortBy(function (el) {
+                return el.get('id')
+            });
+
+           //console.log('sorted',app.id, this.sorted);
+
+          //  this.collection.forEach(netTemplateModel=> {
               this.sorted.forEach(netTemplateModel=> {
             //console.log('netTemplateModel',netTemplateModel)
                 //this.netTemplateModel = app.netcollect.get(0);
             //this.netTemplateModel.save();
-            this.$el.append(this.netTmpl(netTemplateModel));
+            this.$el.append(this.netTmpl(netTemplateModel.attributes));
                 //assigning attr  to destroy button
             //this.$el.find(".destroy").text(netTemplateModel.id);
+                  //hiding sublevels
+                  this.$el.find('.toggled').hide();
+
+
             this.$el.find('button').css('background-color', 'gold');
             //this.$el.find(".destroy").on('click',function (kk) { console.log(kk,this)
             //});
              //this.$el.find(".refresh").on('click', this.fetchContent);
             //this.$el.find(".save").on('click', this.saveToAll);
-            this.$el.find('p').css('background-color', 'beige');
+            this.$el.find('div').css('background-color', 'beige');
             })
         },
         fetchContent: async function (id) {
@@ -124,8 +141,7 @@ var app = app || {};
           //   //itsf failing due to no difference between two view objects that has
           //   //binded to same event listener
            this.tobedeleted.destroy();
-           this.fetchContent();
-           this.render()
+           this.initialize()
             //initial rendering
         },
 

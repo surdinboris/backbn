@@ -12,12 +12,13 @@ RESTful
 
 
 <script type="text/template" id="net-content">
-    <p id="<%= id %>"><%= nettitle+' '+id %></p>
+    <div id="<%= id %>"><%= nettitle+' '+id %> <button class="editButton" id="<%= id %>"> edit </button>
+    <div class="toggled" id="<%= id %>">
     <input class="edit" id="<%= id %>" value="<%= nettitle %>">
     <button class="save" id="<%= id %>"> save </button>
     <button class="destroy" id="<%= id %>" > delete </button>
-    <button class="refresh" id="<%= id %>"> refresh  </button>
-
+    </div>
+    </div>
 </script>
 
 <script type="text/template" id="my-place">
@@ -42,16 +43,14 @@ RESTful
 <script src="node_modules/underscore/underscore.js"></script>
 <script src="node_modules/backbone/backbone.js"></script>
 
+<script src="js/app.js"></script>
 <script src="js/views/appview.js"></script>
 <script src="js/views/todo-view.js"></script>
 <script src="js/models/models.js"></script>
-<script src="js/routers/router.js"></script>
+
 <script src="js/collections/collections.js"></script>
-<script src="js/app.js"></script>
 
-<script>
-//examination scope
+<script src="js/routers/router.js"></script>
 
-</script>
 </body>
 </html>
