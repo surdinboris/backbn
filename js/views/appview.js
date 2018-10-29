@@ -40,7 +40,7 @@ var app = app || {};
             },
             "focus .edit": function(ev){
 
-                app.oRouter.navigate("edit/"+ev.target.id, {trigger:true})
+                app.oRouter.navigate("edit/"+ev.target.id)
 
             },
             "keyup .edit": function (ev) {

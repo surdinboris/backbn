@@ -28,21 +28,23 @@ function isRestURL(request){
     return result
 }
 
+//helpers
+//helper for upd database
 function updateDB(rec) {
     let updId=rec.id;
     let index= -1;
     pseudoDB.forEach(rec=>{
-      if(rec.id == updId){
-          index=pseudoDB.indexOf(rec)
-      }
+        if(rec.id == updId){
+            index=pseudoDB.indexOf(rec)
+        }
     });
     if(index > -1){
         pseudoDB.splice(index,1,rec);
-       // pseudoDB.push(rec);
+        // pseudoDB.push(rec);
         console.log('pseudoDB updated', pseudoDB)
     }
 }
-//helpers
+//response
 async function notAllowed(request) {
     return {
         //status: 405,
@@ -74,7 +76,14 @@ function pipeStream(from, to) {
 // accept urls in format '/restapi' or '/restapi/2' test:
 //console.log(isRestURL('/restapi'))
 //console.log(isRestURL('/restapi/2'))
-
+//for info - from backbone's rest api
+var methodMap = {
+    'create': 'POST',
+    'update': 'PUT',
+    'patch':  'PATCH',
+    'delete': 'DELETE',
+    'read':   'GET'
+};
 
 createServer((request, response) => {
     //Router - checking whatever its a regular request or rest api

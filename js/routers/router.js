@@ -15,10 +15,9 @@ var app = app || {};
 
         edit: function (id) {
         $(document).ready(function(){
-            $(`.toggled`).hide()
-            this.target=$(`.toggled[id=${id}]`);
-            console.log(this.target)
-            this.target.toggle()
+            $(`.toggled`).hide('slow');
+            $(`.toggled[id=${id}]`)
+            .toggle('slow')
         })},
 
 
