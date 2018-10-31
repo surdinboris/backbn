@@ -6,3 +6,15 @@ h1 {
     color: navy;
     margin-left: 20px;
 }
+
+.header {
+    background-color: #F1F1F1;
+    text-align: center;
+    padding: 20px;
+}
+
+.todoapp {
+    background-color: #eef1ac;
+    text-align: center;
+    padding: 20px;
+}
