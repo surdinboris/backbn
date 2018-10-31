@@ -1,5 +1,5 @@
 
-//////////////creating server
+//creating server
 const {createServer} = require("http");
 const methods = Object.create(null);
 const RESTmethods = Object.create(null);

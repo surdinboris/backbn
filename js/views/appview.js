@@ -23,7 +23,6 @@ var app = app || {};
             'click': 'clicked',
             'click .editButton': function (ev) {
                 let id=ev.target.id;
-                console.log(id)
                 this.$el.find(`.toggled[id="${id}"]`).toggle('slow');
                 //this.$el.find('.toggle')
             },
