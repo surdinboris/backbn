@@ -6,6 +6,7 @@ var app = app || {};
         defaults: {
             nettitle: '',
             meta: 0,
+            done: 0,
 
         },
         initialize: function () {

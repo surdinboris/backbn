@@ -14,10 +14,10 @@ const mime = require("mime");
 
 //fake DB
 let pseudoDB = [ {id:0, nettitle: 'data from node server one',
-    meta: 800}
+    meta: 800, done : false}
     ,{id:1, nettitle: 'data from node server two',
-    meta: 800},{id:2, nettitle: 'data from node server three',
-    meta: 800}];
+    meta: 800,  done : false},{id:2, nettitle: 'data from node server three',
+    meta: 80, done : false}];
 
 function isRestURL(request){
     let idfilter = /\/restapi\/?(\d+)?$/;

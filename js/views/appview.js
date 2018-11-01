@@ -20,7 +20,6 @@ var app = app || {};
         netTmpl: _.template($('#net-content').html()),
         //renderCounter:0,
         events: {
-            'click': 'clicked',
             'click .editButton': function (ev) {
                 let id=ev.target.id;
                 this.$el.find(`.toggled[id="${id}"]`).toggle('slow');
@@ -44,25 +43,28 @@ var app = app || {};
                 // on server when sace is pressed
             },
             "focus .edit": function(ev){
-
                 app.oRouter.navigate("edit/"+ev.target.id)
 
             },
+
             "keyup .edit": function (ev) {
                 let id=parseInt($(ev.target).attr('id'));
                 let text=$(ev.target).val();
                 app.netcollect.set({id:id, nettitle: text})
             },
+            //update url in case of input field and reset in case of other element
+
         },
 
         initialize:  function(){
            this.fetchContent().then(()=>{
-
+              
             this.render()
         })
         },
         //on-demand rendering
         render: function(){
+
             this.$el.html('');
             //sorting:
             this.sorted = app.netcollect.sortBy(function (el) {
@@ -83,7 +85,6 @@ var app = app || {};
                 type: 'GET',
                 success: function(collection, response) {
                     _.each(collection.models, function(model) {
-                        console.log('ok');
                     })
                 },
                 error: function (resp) {
