@@ -17,7 +17,7 @@ let pseudoDB = [{
     id: 0,
     nettitle: 'data from node server one',
     meta: 800,
-    completed: false
+    completed: true
 },
     {
         id: 1,

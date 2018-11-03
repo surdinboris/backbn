@@ -43,9 +43,30 @@ var app = app || {};
 
     var NetCollection = Backbone.Collection.extend({
         model: app.Netc,
-        url: '/restapi' //to fetch/dmanipulate with collection
+        url: '/restapi', //to fetch/manipulate collection
+
+        comparator: function( todo ) {
+            return todo.get('id');
+        },
+
+        nextOrder: function() {
+            if ( !this.length ) {
+                return 1;
+            }
+            return this.last().get('id') + 1;
+
+        },
+
+        completed: function() {
+            return this.filter(function( todo ) {
+                return todo.get('completed');
+            });
+        },
+
+
     });
     //creating app collection based on server data
     app.netcollect = new NetCollection();
+
 
 })();

@@ -9,8 +9,26 @@ var app = app || {};
         el: '.todoapp',
         initialize: function () {
             //adding network view element
-            this.$el.append(new app.networkView().el);
-        }
+           // this.$el.append(new app.networkView().el);
+            //listen to model changes
+
+            this.listenTo(app.Netc, 'add', this.addOne);
+            this.listenTo(app.Netc, 'reset', this.addAll);
+        },
+
+
+        ///rebuild
+        addOne: function( todo ) {
+            var view = new app.TodoView({ model: todo });
+            $('#todo-list').append( view.render().el );
+        },
+        
+        // Add all items in the **Todos** collection at once.
+        addAll: function() {
+            this.$('#todo-list').html('');
+            app.Todos.each(this.addOne, this);
+        },
+
     })
 
 })(jQuery);
@@ -55,8 +73,10 @@ var app = app || {};
             //update url in case of input field and reset in case of other element
 
         },
-
+//one initialization for all models ->>> own init for each model
         initialize:  function(){
+            this.$button=this.$('button');
+            console.log('this.$button',this.$button)
            this.fetchContent().then(()=>{
               
             this.render()
