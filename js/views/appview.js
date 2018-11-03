@@ -14,6 +14,7 @@ var app = app || {};
 
             this.listenTo(app.Netc, 'add', this.addOne);
             this.listenTo(app.Netc, 'reset', this.addAll);
+            app.Netc.fetch();
         },
 
 
@@ -22,7 +23,7 @@ var app = app || {};
             var view = new app.TodoView({ model: todo });
             $('#todo-list').append( view.render().el );
         },
-        
+
         // Add all items in the **Todos** collection at once.
         addAll: function() {
             this.$('#todo-list').html('');
