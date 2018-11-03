@@ -13,8 +13,9 @@
 
 <section class="todoapp">
     <script type="text/template" id="net-content">
-        <input id="<%= id %>" type="checkbox">
+
         <div id="<%= id %>"><%= nettitle+' '+id %>
+            <input id="<%= id %>" type="checkbox">
             <button class="editButton" id="<%= id %>"> edit</button>
             <div class="toggled" id="<%= id %>">
                 <input class="edit" id="<%= id %>" value="<%= nettitle %>">
@@ -23,10 +24,14 @@
             </div>
         </div>
     </script>
+
+
     <script type="text/template" id="item-template">
         <div class="view">
         </div>
     </script>
+
+
     <script src="node_modules/jquery/dist/jquery.js"></script>
     <script src="node_modules/underscore/underscore.js"></script>
     <script src="node_modules/backbone/backbone.js"></script>
