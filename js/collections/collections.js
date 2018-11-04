@@ -48,13 +48,11 @@ var app = app || {};
         comparator: function( todo ) {
             return todo.get('id');
         },
-
         nextOrder: function() {
             if ( !this.length ) {
                 return 1;
             }
             return this.last().get('id') + 1;
-
         },
 
         completed: function() {
@@ -66,7 +64,7 @@ var app = app || {};
 
     });
     //creating app collection based on server data
-    app.netcollect = new NetCollection();
+    app.Netc = new NetCollection();
 
 
 })();

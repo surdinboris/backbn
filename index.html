@@ -11,26 +11,20 @@
     <p>RESTful</p>
 </div>
 
-<section class="todoapp">
-    <script type="text/template" id="net-content">
 
-        <div id="<%= id %>"><%= nettitle+' '+id %>
-            <input id="<%= id %>" type="checkbox">
-            <button class="editButton" id="<%= id %>"> edit</button>
-            <div class="toggled" id="<%= id %>">
-                <input class="edit" id="<%= id %>" value="<%= nettitle %>">
-                <button class="save" id="<%= id %>"> save</button>
-                <button class="destroy" id="<%= id %>"> delete</button>
-            </div>
-        </div>
-    </script>
+<section id="todoapp">
+    <ul id="todo-list"></ul>
+</section>
 
 
-    <script type="text/template" id="item-template">
+<script type="text/template" id="item-template">
         <div class="view">
+            <input class="toggle" type="checkbox" <%= completed ? 'checked' : '' %>>
+            <label><%= nettitle %></label>
+            <button class="destroy">del</button>
         </div>
-    </script>
-
+        <input class="edit" value="<%= nettitle %>">
+</script>
 
     <script src="node_modules/jquery/dist/jquery.js"></script>
     <script src="node_modules/underscore/underscore.js"></script>
@@ -40,6 +34,6 @@
     <script src="js/models/models.js"></script>
     <script src="js/collections/collections.js"></script>
     <script src="js/routers/router.js"></script>
-</section>
+
 </body>
 </html>

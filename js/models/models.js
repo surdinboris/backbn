@@ -10,6 +10,7 @@ var app = app || {};
 
         },
         initialize: function () {
+
             console.log('Nettitle model initialized');
 
         }
