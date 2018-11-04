@@ -19,7 +19,6 @@ var app = app || {};
             //data arrived to client
             var view = new app.ItemsView({model:elem});
             //appending view.el to document
-            console.log(view.render().el)
             $('#todo-list').append( view.render().el );
 
             },
