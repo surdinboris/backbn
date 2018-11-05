@@ -15,19 +15,19 @@ const mime = require("mime");
 //fake DB
 let pseudoDB = [{
     id: 0,
-    nettitle: 'data from node server one',
+    title: 'data from node server one',
     meta: 800,
     completed: true
 },
     {
         id: 1,
-        nettitle: 'data from node server two',
+        title: 'data from node server two',
         meta: 800,
         completed: true
     },
     {
         id: 2,
-        nettitle: 'data from node server three',
+        title: 'data from node server three',
         meta: 80,
         completed: false
     }];

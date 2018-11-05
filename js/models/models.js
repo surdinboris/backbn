@@ -4,7 +4,7 @@ var app = app || {};
 (function () {
     app.Netc = Backbone.Model.extend ({
         defaults: {
-            nettitle: '',
+            title: '',
             meta: 0,
             completed: 0,
 

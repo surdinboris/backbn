@@ -7,9 +7,6 @@ body {
     background-color: lightblue;
 }
 
-ul{
-   align-items: safe;
-}
 
 h1 {
     color: navy;
@@ -60,7 +57,11 @@ section
 
 
 .edit {
-     text-overflow: ellipsis;
-     background-color: #9ef18d;
-     text-align: justify;
+    display: none;
+
  }
+
+.editing {
+    display: block;
+
+}

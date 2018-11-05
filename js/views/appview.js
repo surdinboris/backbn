@@ -35,17 +35,28 @@ var app = app || {};
 
 (function () {
     app.ItemsView = Backbone.View.extend({
-        netTmpl: _.template($('#item-template').html()),
-
-//one initialization for all models ->>> own init for each model
+        tmpl: _.template($('#item-template').html()),
         tagName: 'div',
+        events: {
+            'dblclick label': 'edit',
+            'keypress .edit': 'updateOnEnter',
+            'blur .edit': 'close'
+        },
+
+        edit: function (ev) {
+            console.log( this.$el.find('.edit'))
+            this.$el.find('.edit').addClass('editing');
+            this.$el.addClass('editing');
+            this.$input.focus();
+        },
         initialize:  function(){
             console.log('ItemsView view initialized');
             this.listenTo(this.model, 'change', this.render);
        },
         //on-demand rendering
         render: function() {
-            this.$el.html(this.netTmpl(this.model.attributes));
+            this.$el.html(this.tmpl(this.model.attributes));
+            this.$input = this.$('.edit');
             return this;
         },
 
