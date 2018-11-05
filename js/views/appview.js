@@ -19,7 +19,7 @@ var app = app || {};
             //data arrived to client
             var view = new app.ItemsView({model:elem});
             //appending view.el to document
-            $('#todo-list').append( view.render().el );
+            $('#todoapp').append( view.render().el );
 
             },
 
