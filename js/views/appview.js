@@ -45,7 +45,6 @@ var app = app || {};
        },
         //on-demand rendering
         render: function() {
-            console.log('rendering ',this.model.attributes );
             this.$el.html(this.netTmpl(this.model.attributes));
             return this;
         },
