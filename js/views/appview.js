@@ -38,7 +38,7 @@ var app = app || {};
         netTmpl: _.template($('#item-template').html()),
 
 //one initialization for all models ->>> own init for each model
-        tagName: 'li',
+        tagName: 'div',
         initialize:  function(){
             console.log('ItemsView view initialized');
             this.listenTo(this.model, 'change', this.render);

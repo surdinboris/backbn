@@ -1,7 +1,14 @@
-button { border-radius: 100%; }
+button {
+    border-radius: 20%;
+}
+
 
 body {
     background-color: lightblue;
+}
+
+ul{
+   align-items: safe;
 }
 
 h1 {
@@ -9,14 +16,51 @@ h1 {
     margin-left: 20px;
 }
 
-.header {
+header {
     background-color: #F1F1F1;
     text-align: center;
     padding: 20px;
+    border-radius: 5px;
 }
 
-.todoapp {
-    background-color: #eef1ac;
+section,
+footer
+{
     text-align: center;
-    padding: 20px;
+    background-color: #666666;
+    border-radius: 5px;
+    padding: 50px;
 }
+
+label{
+    text-align: center;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 170px;
+    height: auto;
+    vertical-align: middle;
+}
+
+article {
+    width: 100%;
+    background-color: #eef1ac;
+    padding: 20px;
+    border-radius: 5px;
+}
+
+section
+{
+
+    width: calc(100% - 100px);
+    margin: 0 50px 50px 50px;
+}
+
+
+
+.edit {
+     text-overflow: ellipsis;
+     background-color: #9ef18d;
+     text-align: justify;
+ }
