@@ -25,7 +25,7 @@ var app = app || {};
 
         // Add all items in the **Todos** collection at once.
         addAll: function() {
-            this.$('#todo-list').html('');
+            this.$('#todoapp').html('');
             app.Todos.each(this.addOne, this);
         },
 
@@ -46,6 +46,7 @@ var app = app || {};
         edit: function (ev) {
             console.log( this.$el.find('.edit'))
             this.$el.find('.edit').addClass('editing');
+
             this.$el.addClass('editing');
             this.$input.focus();
         },
@@ -56,7 +57,7 @@ var app = app || {};
         //on-demand rendering
         render: function() {
             this.$el.html(this.tmpl(this.model.attributes));
-            this.$input = this.$('.edit');
+            //this.$input = this.$('.edit');
             return this;
         },
 
