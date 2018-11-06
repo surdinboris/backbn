@@ -44,10 +44,7 @@ var app = app || {};
         },
 
         edit: function (ev) {
-            console.log( this.$el.find('.edit'))
-            this.$el.find('.edit').addClass('editing');
-
-            this.$el.addClass('editing');
+            this.$el.find('input.edit').addClass('editing');
             this.$input.focus();
         },
         initialize:  function(){
