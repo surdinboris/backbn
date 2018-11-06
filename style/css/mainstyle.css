@@ -54,10 +54,11 @@ article {
     margin: 0 50px 50px 50px;
 }
 
-div .edit {
+.edit {
     display: none;
- }
+}
 
-div .editing {
+.editing {
     display: inline;
 }
+
