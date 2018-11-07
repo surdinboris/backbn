@@ -29,36 +29,42 @@ footer
     padding: 50px;
 }
 
+div{
+    display: block;
+    height: 30px;
+}
 label{
-    text-align: center;
     display: inline-block;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
     width: 170px;
-    height: auto;
-    vertical-align: middle;
+    text-align: center;
 }
 
 article {
-
     width: 100%;
     background-color: #eef1ac;
-    padding: 20px;
+    padding: 60px;
     border-radius: 5px;
+
 }
 
-.section {
-
+section {
     width: calc(100% - 100px);
     margin: 0 50px 50px 50px;
 }
-
+/*default state - hidden*/
 .edit {
     display: none;
-}
 
+}
+/*show input field*/
 .editing input.edit{
-    display: inline;
+    display: inline-block;
+
 }
 
+.editing label{
+    display: none;
+}
