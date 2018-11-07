@@ -42,18 +42,18 @@ var app = app || {};
         events: {
             'dblclick label': 'edit',
             'keypress .edit': 'updateOnEnter',
-            'blur .edit': 'close'
+            'blur input.edit': 'close'
         },
 
         edit: function (ev) {
 
             this.$el.addClass('editing');
             console.log('edit',this.$el)
-            //this.$input.focus();
+            this.$input.focus();
         },
 
         close: function () {
-            this.$input.removeClass('editing');
+            this.$el.removeClass('editing');
         },
 
         initialize:  function(){
