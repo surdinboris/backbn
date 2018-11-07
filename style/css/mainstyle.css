@@ -39,7 +39,7 @@ label{
     text-overflow: ellipsis;
     white-space: nowrap;
     width: 170px;
-    text-align: center;
+    vertical-align: middle;
 }
 
 article {
@@ -62,6 +62,7 @@ section {
 /*show input field*/
 .editing input.edit{
     display: inline-block;
+    width: 170px;
 
 }
 
