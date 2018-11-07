@@ -58,7 +58,7 @@ article {
     display: none;
 }
 
-.editing {
+.editing input{
     display: inline;
 }
 

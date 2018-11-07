@@ -37,6 +37,7 @@ var app = app || {};
 (function () {
     app.ItemsView = Backbone.View.extend({
         tmpl: _.template($('#item-template').html()),
+
         tagName: 'div',
         events: {
             'dblclick label': 'edit',
@@ -46,10 +47,15 @@ var app = app || {};
 
         edit: function (ev) {
 
-            this.$input.addClass('editing');
-            console.log('edit',this.$input)
+            this.$el.addClass('editing');
+            console.log('edit',this.$el)
             //this.$input.focus();
         },
+
+        close: function () {
+            this.$input.removeClass('editing');
+        },
+
         initialize:  function(){
             console.log('ItemsView view initialized');
             this.listenTo(this.model, 'change', this.render);
