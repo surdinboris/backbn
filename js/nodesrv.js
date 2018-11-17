@@ -46,9 +46,9 @@ function isRestURL(request){
 function updateDB(rec) {
     let updId=rec.id;
     let index= -1;
-    pseudoDB.forEach(rec=>{
-        if(rec.id == updId){
-            index=pseudoDB.indexOf(rec)
+    pseudoDB.forEach(r=>{
+        if(r.id == updId){
+            index=pseudoDB.indexOf(r)
         }
     });
     if(index > -1){
