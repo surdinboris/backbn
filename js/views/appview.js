@@ -54,6 +54,10 @@ var app = app || {};
 
         close: function () {
             this.$el.removeClass('editing');
+            if(this.$input.val()){
+                this.model.save({title:this.$input.val()})
+            }
+
         },
 
         initialize:  function(){
