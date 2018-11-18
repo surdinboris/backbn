@@ -41,8 +41,10 @@ var app = app || {};
         tagName: 'div',
         events: {
             'dblclick label': 'edit',
+            'click input.toggle': 'toggle',
             'keypress .edit': 'updateOnEnter',
             'blur input.edit': 'close'
+
         },
 
         edit: function (ev) {
@@ -51,7 +53,9 @@ var app = app || {};
             console.log('edit',this.$el)
             this.$input.focus();
         },
-
+        toggle: function (ev) {
+            this.model.toggle()
+        },
         close: function () {
             this.$el.removeClass('editing');
             if(this.$input.val()){
@@ -68,6 +72,7 @@ var app = app || {};
         render: function() {
             this.$el.html(this.tmpl(this.model.attributes));
             this.$input = this.$el.find('input.edit');
+            this.$toggler = this.$el.find('input.toggle');
             return this;
         },
 

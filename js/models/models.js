@@ -9,6 +9,11 @@ var app = app || {};
             completed: 0,
 
         },
+        toggle: function() {
+            this.save({
+                completed: !this.get('completed')
+            });
+        },
         initialize: function () {
 
             console.log('Nettitle model initialized');
