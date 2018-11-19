@@ -23,7 +23,7 @@ var app = app || {};
 
             },
 
-        // Add all items in the **Todos** collection at once.
+        // // Add all items in the **Todos** collection at once.
         addAll: function() {
             console.log('addAll');
             $('#todoapp').html('');
@@ -43,7 +43,8 @@ var app = app || {};
             'dblclick label': 'edit',
             'click input.toggle': 'toggle',
             'keypress .edit': 'updateOnEnter',
-            'blur input.edit': 'close'
+            'blur input.edit': 'close',
+            'click button.destroy':'delete',
 
         },
 
@@ -56,6 +57,10 @@ var app = app || {};
         toggle: function (ev) {
             this.model.toggle()
         },
+        delete: function(ev){
+            console.log('delete', ev)
+            this.model.destroy()
+        },
         close: function () {
             this.$el.removeClass('editing');
             if(this.$input.val()){
@@ -67,6 +72,7 @@ var app = app || {};
         initialize:  function(){
             console.log('ItemsView view initialized');
             this.listenTo(this.model, 'change', this.render);
+            this.listenTo(this.model, 'destroy', this.remove);
        },
         //on-demand rendering
         render: function() {
