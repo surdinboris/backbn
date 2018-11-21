@@ -44,13 +44,14 @@ var app = app || {};
             'click input.toggle': 'toggle',
             'keypress .edit': 'updateOnEnter',
             'click button':'delete',
-            'blur input.edit': 'close',
+
 
 
         },
 
         edit: function (ev) {
-
+            //delayed event registration to make delete event fire first in any case
+            this.events['blur input.edit']= 'close';
             this.$el.addClass('editing');
             console.log('edit',this.$el)
             this.$input.focus();
@@ -64,9 +65,6 @@ var app = app || {};
             this.model.destroy()
         },
         close: function (ev) {
-            // ev.preventDefault()
-            // console.log(ev.target.originalEvent)
-            // this.delete(ev)
             this.$el.removeClass('editing');
             if(this.$input.val()){
                 this.model.save({title:this.$input.val()})
