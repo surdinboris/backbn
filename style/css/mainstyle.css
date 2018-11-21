@@ -1,9 +1,11 @@
 button {
     border-radius: 20%;
+    margin: auto;
 }
 
 
 body {
+
     background-color: lightblue;
 }
 
@@ -14,6 +16,7 @@ h1 {
 }
 
 header {
+    min-width:400px;
     background-color: #F1F1F1;
     text-align: center;
     padding: 20px;
@@ -23,6 +26,7 @@ header {
 section,
 footer
 {
+    min-width:400px;
     text-align: center;
     background-color: #666666;
     border-radius: 5px;
@@ -31,23 +35,28 @@ footer
 
 div{
     display: block;
-    height: 30px;
+    width: 300px;
+    margin: auto;
+    text-align: left;
+
 }
 label{
-    display: inline-block;
+    display: inline;
+    width: 6px;
+    font-weight: bold;
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
-    width: 170px;
-    vertical-align: middle;
-    text-align: left;
+
 }
 
+
 article {
-    width: 100%;
+    min-width:400px;
     background-color: #eef1ac;
     padding: 60px;
     border-radius: 5px;
+
 
 }
 
@@ -59,14 +68,17 @@ section {
 .edit {
     display: none;
 
+
 }
 /*show input field*/
-.editing input.edit{
-    display: inline-block;
-    width: 170px;
-
+.editing  input.edit{
+    display: inline;
+    /*line-height: 10px;*/
+    /*width: 460px;*/
 }
-
+.editing  button.edit{
+    display: inline;
+}
 .editing label{
     display: none;
 }

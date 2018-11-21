@@ -43,8 +43,9 @@ var app = app || {};
             'dblclick label': 'edit',
             'click input.toggle': 'toggle',
             'keypress .edit': 'updateOnEnter',
+            'click button':'delete',
             'blur input.edit': 'close',
-            'click button.destroy':'delete',
+
 
         },
 
@@ -58,10 +59,14 @@ var app = app || {};
             this.model.toggle()
         },
         delete: function(ev){
+
             console.log('delete', ev)
             this.model.destroy()
         },
-        close: function () {
+        close: function (ev) {
+            // ev.preventDefault()
+            // console.log(ev.target.originalEvent)
+            // this.delete(ev)
             this.$el.removeClass('editing');
             if(this.$input.val()){
                 this.model.save({title:this.$input.val()})
