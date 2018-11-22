@@ -6,8 +6,22 @@ var app = app || {};
     app.AppView = Backbone.View.extend({
         //adding template
         todoTpl: _.template( $('#item-template').html()),
+
         el: '#todoapp',
+
+        events: {'blur input.creating':'create'},
+
+        create: function (ev) {
+            if(this.$input.val().trim()!=''){
+                app.Netc.create({
+                    title: this.$input.val(),
+                    completed: false
+                })
+            }
+            },
+
         initialize: function () {
+            this.$input = this.$('#new-todo');
             this.listenTo(app.Netc, 'add', this.addOne);
             this.listenTo(app.Netc, 'reset', this.addAll);
             app.Netc.fetch();
@@ -40,36 +54,34 @@ var app = app || {};
 
         tagName: 'div',
         events: {
+            'blur input.edit':'close',
+            'click button.destroy':'delete',
             'dblclick label': 'edit',
             'click input.toggle': 'toggle',
             'keypress .edit': 'updateOnEnter',
-            'click button':'delete',
-
-
 
         },
-
         edit: function (ev) {
-            //delayed event registration to make delete event fire first in any case
-            this.events['blur input.edit']= 'close';
             this.$el.addClass('editing');
-            console.log('edit',this.$el)
+            console.log('edit',this.$el);
             this.$input.focus();
         },
         toggle: function (ev) {
             this.model.toggle()
         },
         delete: function(ev){
-
-            console.log('delete', ev)
             this.model.destroy()
         },
         close: function (ev) {
+            let target= ev.originalEvent.relatedTarget || 0;
+            let deleted= target.textContent ==this.$el.find('button.destroy').html();
+            if(deleted){
+                this.delete(ev)
+            }
             this.$el.removeClass('editing');
-            if(this.$input.val()){
+            if(this.$input.val() && !deleted){
                 this.model.save({title:this.$input.val()})
             }
-
         },
 
         initialize:  function(){
@@ -85,15 +97,5 @@ var app = app || {};
             return this;
         },
 
-
-        removeFromAll: function(id){
-           this.tobedeleted = app.netcollect.get(id);
-           this.tobedeleted.destroy();
-           this.initialize()
-        },
-
-        saveToAll: function(e){
-            console.log(e.id)
-        }
 })
 })(jQuery);

@@ -44,10 +44,9 @@ function isRestURL(request){
 //helpers
 //helper for upd database
 function updateDB(rec) {
-    let updId=rec.id;
     let index= -1;
     pseudoDB.forEach(r=>{
-        if(r.id == updId){
+        if(r.id == rec.id){
             index=pseudoDB.indexOf(r)
         }
     });
@@ -56,7 +55,13 @@ function updateDB(rec) {
         // pseudoDB.push(rec);
         console.log('pseudoDB updated', pseudoDB)
     }
+    else {
+        //maybe add some validation
+        pseudoDB.push(rec);
+        console.log('pseudoDB updated', pseudoDB);
+    }
 }
+
 //response
 async function notAllowed(request) {
     return {
@@ -133,7 +138,9 @@ RESTmethods.GET = async function(request) {
     }
 
 };
-RESTmethods.PUT = async function(request) {
+//in this implementation an updateDB is enoch smart
+//to decside if update or new item arrived
+RESTmethods.POST = RESTmethods.PUT = async function(request) {
     var responseString = "";
     request.on("data", function (data) {
         responseString += data;
