@@ -44,6 +44,10 @@ function isRestURL(request){
 //helpers
 //helper for upd database
 function updateDB(rec) {
+    if(!rec.id){
+        console.log('arrived data without id', rec)
+        return
+    }
     let index= -1;
     pseudoDB.forEach(r=>{
         if(r.id == rec.id){
@@ -53,12 +57,12 @@ function updateDB(rec) {
     if(index > -1){
         pseudoDB.splice(index,1,rec);
         // pseudoDB.push(rec);
-        console.log('pseudoDB updated', pseudoDB)
+        console.log('pseudoDB record updated', pseudoDB)
     }
     else {
-        //maybe add some validation
+
         pseudoDB.push(rec);
-        console.log('pseudoDB updated', pseudoDB);
+        console.log('pseudoDB record appended', pseudoDB);
     }
 }
 

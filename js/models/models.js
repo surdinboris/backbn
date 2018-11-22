@@ -5,8 +5,8 @@ var app = app || {};
     app.Netc = Backbone.Model.extend ({
         defaults: {
             title: '',
-            meta: 0,
-            completed: 0,
+            meta: 900,
+            completed: false,
 
         },
         toggle: function() {

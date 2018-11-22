@@ -14,8 +14,8 @@ var app = app || {};
         create: function (ev) {
             if(this.$input.val().trim()!=''){
                 app.Netc.create({
+                    id:app.Netc.nextOrder(),
                     title: this.$input.val(),
-                    completed: false
                 })
             }
             },
