@@ -11,25 +11,36 @@ const {createWriteStream} = require("fs");
 const {createReadStream} = require("fs");
 const {stat, readdir} = require("fs").promises;
 const mime = require("mime");
+const mongoose = require('mongoose');
+
+let mongoDB = 'mongodb://127.0.0.1:27017/todos';
+
+mongoose.connect(mongoDB);
+mongoose.Promise = global.Promise;
+let db = mongoose.connection;
 
 //fake DB
 let pseudoDB = [{
     id: 0,
     title: 'data from node server one',
     meta: 800,
-    completed: true
+    completed: true,
+    todoDate:0
 },
     {
         id: 1,
         title: 'data from node server two',
         meta: 800,
-        completed: true
+        completed: true,
+        todoDate:0
     },
     {
         id: 2,
         title: 'data from node server three',
         meta: 80,
-        completed: false
+        completed: false,
+        todoDate:0
+
     }];
 
 function isRestURL(request){

@@ -7,6 +7,7 @@ var app = app || {};
             title: '',
             meta: 900,
             completed: false,
+            todoDate:0
 
         },
         toggle: function() {

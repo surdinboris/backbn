@@ -63,7 +63,7 @@ var app = app || {};
         },
         edit: function (ev) {
             this.$el.addClass('editing');
-            console.log('edit',this.$el);
+            // console.log('edit',this.$el);
             this.$input.focus();
         },
         toggle: function (ev) {
@@ -73,14 +73,18 @@ var app = app || {};
             this.model.destroy()
         },
         close: function (ev) {
-            let target= ev.originalEvent.relatedTarget || 0;
-            let deleted= target.textContent ==this.$el.find('button.destroy').html();
+            let target=ev.originalEvent.relatedTarget || 0;
+            //checking whether we clicked in hidden section
+            if(target.className == ev.target.className)
+                return;
+            let deleted = target.className == 'destroy';
             if(deleted){
                 this.delete(ev)
             }
+            //closing
             this.$el.removeClass('editing');
-            if(this.$input.val() && !deleted){
-                this.model.save({title:this.$input.val()})
+            if(this.$input.val() || this.$tododate.val() && !deleted){
+                this.model.save({title:this.$input.val(), todoDate:this.$tododate.val()})
             }
         },
 
@@ -92,7 +96,8 @@ var app = app || {};
         //on-demand rendering
         render: function() {
             this.$el.html(this.tmpl(this.model.attributes));
-            this.$input = this.$el.find('input.edit');
+            this.$input = this.$el.find('input#todoediting');
+            this.$tododate = this.$el.find('input#tododate');
             this.$toggler = this.$el.find('input.toggle');
             return this;
         },

@@ -24,8 +24,10 @@
 <script type="text/template" id="item-template">
     <input class="toggle" type="checkbox" <%= completed ? 'checked' : '' %>>
     <label><%= title %></label>
-    <input class="edit" value="<%= title %>">
+    <input class="edit" id="todoediting" value="<%= title %>">
+    <input class="edit" id="tododate" type="date">
     <button class="destroy">delete</button>
+
 </script>
 <script src="node_modules/jquery/dist/jquery.js"></script>
 <script src="node_modules/underscore/underscore.js"></script>
