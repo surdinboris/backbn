@@ -23,16 +23,23 @@ db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 var Schema = mongoose.Schema;
 
 var SomeModelSchema = new Schema({
-    a_string: String,
-    a_date: Date
+    name: String
 });
 var SomeModel = mongoose.model('SomeModel', SomeModelSchema );
 var awesome_instance = new SomeModel({ name: 'awesome' });
 awesome_instance.save(function (err) {
-    if (err) return handleError(err);
+    if (err) return err;
     // saved!
 });
+setTimeout(function() {SomeModel.find({name: 'awesome'}, 'name',function (err,res) {
+    if(err) {
+        return err
+    }
+    console.log('result',res)
+})}, 50);
+
 //fake DB
+
 let pseudoDB = [{
     id: 0,
     title: 'data from node server one',
