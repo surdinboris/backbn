@@ -18,7 +18,20 @@ let mongoDB = 'mongodb://127.0.0.1:27017/todos';
 mongoose.connect(mongoDB);
 mongoose.Promise = global.Promise;
 let db = mongoose.connection;
+db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
+var Schema = mongoose.Schema;
+
+var SomeModelSchema = new Schema({
+    a_string: String,
+    a_date: Date
+});
+var SomeModel = mongoose.model('SomeModel', SomeModelSchema );
+var awesome_instance = new SomeModel({ name: 'awesome' });
+awesome_instance.save(function (err) {
+    if (err) return handleError(err);
+    // saved!
+});
 //fake DB
 let pseudoDB = [{
     id: 0,
