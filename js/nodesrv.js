@@ -44,24 +44,28 @@ let TodoModel = mongoose.model('SomeModel', TodoSchema );
         }).then(res => console.log(res._id))
 
     }
-})();
+});
 
 
 //find
-function findDB(id) {
+function getDB(id) {
     return new Promise(function (resolve, reject) {
         TodoModel.find({id: id}, 'title', function (err, res) {
             if (err) {
+
                 reject(err)
             }
-            resolve(res)
+            if (res.length>1){
+                console.log(`there are more than one records with similar id found \n,${res}`)
+            }
+            resolve(res[0])
         })
     })
 
 }
 
 // testing
-// findDB(1).then(res=>console.log('promised',res))
+ getDB(23).then(res=>console.log('promised',res))
 
 //add
 function addDB(record){
