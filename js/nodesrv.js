@@ -13,15 +13,14 @@ const {stat, readdir} = require("fs").promises;
 const mime = require("mime");
 const mongoose = require('mongoose');
 
-let mongoDB = 'mongodb://127.0.0.1:27017/todos';
+////DB - to be wrapped in  module with CRUD interface
 
+let mongoDB= 'mongodb://127.0.0.1:27017/todos';
 mongoose.connect(mongoDB);
 mongoose.Promise = global.Promise;
 let db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-
 let Schema = mongoose.Schema;
-
 let TodoSchema = new Schema({
     id: 0,
     title: '',
@@ -29,12 +28,11 @@ let TodoSchema = new Schema({
     completed: false,
     todoDate:0
 });
-
-let TodoModel = mongoose.model('SomeModel', TodoSchema );
+let TodoModel=  mongoose.model('SomeModel', TodoSchema );
 
 //testing
-(function populateDB() {
-    for (let i = 20; i < 38; i++) {
+function populateDB() {
+    for (let i = 0; i < 38; i++) {
         addDB({
             id: i,
             title: `data from node server four ${i}`,
@@ -44,8 +42,7 @@ let TodoModel = mongoose.model('SomeModel', TodoSchema );
         }).then(res => console.log(res._id))
 
     }
-});
-
+}
 
 //find
 function getDB(id) {
@@ -58,14 +55,16 @@ function getDB(id) {
             if (res.length>1){
                 console.log(`there are more than one records with similar id found \n,${res}`)
             }
+            if (res.length == 0){
+                reject('records not found')
+            }
             resolve(res[0])
         })
     })
 
-}
-
+};
 // testing
- getDB(23).then(res=>console.log('promised',res))
+
 
 //add
 function addDB(record){
@@ -80,6 +79,25 @@ function addDB(record){
     })
     })
 }
+
+getDB(23).then(res => {console.log('promised',res)
+}).catch(err => console.log(err));
+//remove
+function removeDB(record){
+    return new Promise(function(resolve, reject){
+        TodoModel.deleteOne(record, function (err, result) {
+            if(err) reject('DB error occured',err);
+            if(result.n == 0) reject('no records were deleted');
+            resolve(result)
+    })
+})
+
+}
+
+//removeDB({title: 'data from node server four 23'})
+removeDB({title: 'data from node server four 23'})
+    .then(res =>console.log(res))
+    .catch(err => console.log(err));
 
 //fake DB
 let pseudoDB = [{
