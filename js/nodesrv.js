@@ -20,26 +20,64 @@ mongoose.Promise = global.Promise;
 let db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 
-var Schema = mongoose.Schema;
+let Schema = mongoose.Schema;
 
-var SomeModelSchema = new Schema({
-    name: String
+let TodoSchema = new Schema({
+    id: 0,
+    title: '',
+    meta: 0,
+    completed: false,
+    todoDate:0
 });
-var SomeModel = mongoose.model('SomeModel', SomeModelSchema );
-var awesome_instance = new SomeModel({ name: 'awesome' });
-awesome_instance.save(function (err) {
-    if (err) return err;
-    // saved!
-});
-setTimeout(function() {SomeModel.find({name: 'awesome'}, 'name',function (err,res) {
-    if(err) {
-        return err
+
+let TodoModel = mongoose.model('SomeModel', TodoSchema );
+
+//testing
+(function populateDB() {
+    for (let i = 20; i < 38; i++) {
+        addDB({
+            id: i,
+            title: `data from node server four ${i}`,
+            meta: 800,
+            completed: true,
+            todoDate: 0
+        }).then(res => console.log(res._id))
+
     }
-    console.log('result',res)
-})}, 50);
+})();
+
+
+//find
+function findDB(id) {
+    return new Promise(function (resolve, reject) {
+        TodoModel.find({id: id}, 'title', function (err, res) {
+            if (err) {
+                reject(err)
+            }
+            resolve(res)
+        })
+    })
+
+}
+
+// testing
+// findDB(1).then(res=>console.log('promised',res))
+
+//add
+function addDB(record){
+    //maybe add some validation of arrived data record?
+    return new Promise(function (resolve,reject) {
+    let newrec = new TodoModel(record);
+    newrec.save(function (err, record) {
+        if(err){
+            reject(err)
+        }
+        resolve(record)
+    })
+    })
+}
 
 //fake DB
-
 let pseudoDB = [{
     id: 0,
     title: 'data from node server one',
