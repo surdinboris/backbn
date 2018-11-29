@@ -48,12 +48,12 @@ var app = app || {};
         comparator: function( todo ) {
             return todo.get('id');
         },
-        nextOrder: function() {
-            if ( !this.length ) {
-                return 1;
-            }
-            return this.last().get('id') + 1;
-        },
+        // nextOrder: function() {
+        //     if ( !this.length ) {
+        //         return 1;
+        //     }
+        //     return this.last().get('id') + 1;
+        // },
 
         completed: function() {
             return this.filter(function( todo ) {

@@ -98,6 +98,7 @@ function addDB(record, update){
             }
             //in case of id was found but update not allowed(adding new record case)
             if (dbrecord && !update){
+                console.log('dbrecord',dbrecord)
                 reject('trying to add record with id that persists in database')
                 return
             }
@@ -178,28 +179,28 @@ function isRestURL(request){
 
 //helpers
 //helper for upd database
-function updateDB(rec) {
-    if(!rec.id){
-        console.log('arrived data without id', rec)
-        return
-    }
-    let index= -1;
-    pseudoDB.forEach(r=>{
-        if(r.id == rec.id){
-            index=pseudoDB.indexOf(r)
-        }
-    });
-    if(index > -1){
-        pseudoDB.splice(index,1,rec);
-        // pseudoDB.push(rec);
-        console.log('pseudoDB record updated', pseudoDB)
-    }
-    else {
-
-        pseudoDB.push(rec);
-        console.log('pseudoDB record appended', pseudoDB);
-    }
-}
+// function updateDB(rec) {
+//     if(!rec.id){
+//         console.log('arrived data without id', rec)
+//         return
+//     }
+//     let index= -1;
+//     pseudoDB.forEach(r=>{
+//         if(r.id == rec.id){
+//             index=pseudoDB.indexOf(r)
+//         }
+//     });
+//     if(index > -1){
+//         pseudoDB.splice(index,1,rec);
+//         // pseudoDB.push(rec);
+//         console.log('pseudoDB record updated', pseudoDB)
+//     }
+//     else {
+//
+//         pseudoDB.push(rec);
+//         console.log('pseudoDB record appended', pseudoDB);
+//     }
+// }
 
 //response
 async function notAllowed(request) {
@@ -279,23 +280,32 @@ RESTmethods.GET = async function(request) {
 };
 //in this implementation an updateDB is enoch smart
 //to decside if update or new item arrived
-RESTmethods.POST = RESTmethods.PUT = async function(request) {
+
+//create
+RESTmethods.POST = async function(request) {
     var responseString = "";
     request.on("data", function (data) {
         responseString += data;
     });
-    request.on("end", function () {
-        //console.log(JSON.parse(responseString));
+    request.on("end", async function () {
         //appending to model
-        updateDB(JSON.parse(responseString));
+        //updateDB(JSON.parse(responseString));
+        //append with
+        let all = await getAllDB();
+        let highest=0;
+        all.forEach(el=>{
+            if(el.id > highest)
+                highest=el.id
+        });
+        addDB(Object.assign({},JSON.parse(responseString),{id:highest+1}), false);
     });
 
     return  {
         status: 200, body: 'ok'
     }
 };
-
-RESTmethods.PATCH = async function (request) {
+//full attrs update (patch:false on client)
+RESTmethods.PUT = async function (request) {
     var responseString = "";
     request.on("data", function (data) {
         responseString += data;
@@ -304,6 +314,7 @@ RESTmethods.PATCH = async function (request) {
         console.log(JSON.parse(responseString));
         //appending to model
         //updateDB(JSON.parse(responseString));
+        addDB(JSON.parse(responseString), true);
     });
     return {
         status: 200, body: 'ok'   }
