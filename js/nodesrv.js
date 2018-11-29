@@ -39,7 +39,7 @@ let TodoModel=  mongoose.model('SomeModel', TodoSchema );
             meta: 800,
             completed: true,
             todoDate: 0
-        }).then(res => console.log(res._id))
+        },false).then(res => console.log(res._id))
 
     }
 })()
@@ -61,35 +61,44 @@ function getDB(id) {
         })
     })
 
-};
+}
 // testing
 
 
 //adding with validation
-function addDB(record){
+function addDB(record, update){
     //maybe add some validation of arrived data record?
     return new Promise(function (resolve,reject) {
-    getDB(record.id).then(function (id) {
-        if(id) reject('trying to add record with id that persists in database')
-        let newrec = new TodoModel(record);
-        newrec.save(function (savingerr, record) {
-            if(savingerr){
-                reject(savingerr)
+        //retrieving dbrecord record from database
+        getDB(record.id).then(function (dbrecord) {
+            let newrec = new TodoModel(record);
+            //not suitable case - avoid to updates for not presented record
+
+            if(!dbrecord && update){
+                reject(' error: updates for not presented record not allowed')
+                return
             }
-            resolve(record)
-        })
-    }).catch(err => console.log('new record\'s id failed to be verified in database before saving with following error (escalated): \n', err))
-  })
+            //in case of id was found but update not allowed(adding new record case)
+            if (dbrecord && !update){
+                reject('trying to add record with id that persists in database')
+                return
+            }
+            //in case of updating new record - replacing content of persisted data
+            if (dbrecord && update) {
+                newrec = dbrecord.set(record)
+            }
+            //in case of id not found in db - just creation of new record
+
+            newrec.save(function (savingerr, record) {
+                if (savingerr) {
+                    reject(savingerr)
+                }
+                resolve(record)
+            })
+        }).catch(err => console.log('new record\'s id failed to be verified in database before saving with following error (escalated): \n', err))
+    }).catch(err => console.log('addDB error: \n', err))
 }
 
-function updDB(record){
-    return new Promise( function (resolve,reject) {
-        getDB(record.id).then(function (id,err) {
-
-        })
-    })
-}
-//updating with validation
 
 // getDB(23).then(res => {console.log('promised',res)
 // }).catch(err => console.log(err));
