@@ -39,7 +39,7 @@ let TodoModel=  mongoose.model('SomeModel', TodoSchema );
             meta: 800,
             completed: true,
             todoDate: 0
-        },false).then(res => console.log(res._id))
+        },false).then(res => console.log(res._id)).catch(err=>console.log('failed to get added id\'s due to adding errors',err))
 
     }
 })()
