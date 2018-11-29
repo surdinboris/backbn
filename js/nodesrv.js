@@ -31,8 +31,8 @@ let TodoSchema = new Schema({
 let TodoModel=  mongoose.model('SomeModel', TodoSchema );
 
 //testing
-function populateDB() {
-    for (let i = 0; i < 38; i++) {
+(function populateDB() {
+    for (let i = 50; i < 52; i++) {
         addDB({
             id: i,
             title: `data from node server four ${i}`,
@@ -42,21 +42,20 @@ function populateDB() {
         }).then(res => console.log(res._id))
 
     }
-}
+})()
 
 //find
 function getDB(id) {
     return new Promise(function (resolve, reject) {
         TodoModel.find({id: id}, 'title', function (err, res) {
             if (err) {
-
                 reject(err)
             }
             if (res.length>1){
-                console.log(`there are more than one records with similar id found \n,${res}`)
+                reject(`there is more than one document found with similar id found \n,${res}`)
             }
             if (res.length == 0){
-                reject('records not found')
+                resolve(false)
             }
             resolve(res[0])
         })
@@ -66,22 +65,34 @@ function getDB(id) {
 // testing
 
 
-//add
+//adding with validation
 function addDB(record){
     //maybe add some validation of arrived data record?
     return new Promise(function (resolve,reject) {
-    let newrec = new TodoModel(record);
-    newrec.save(function (err, record) {
-        if(err){
-            reject(err)
-        }
-        resolve(record)
-    })
-    })
+    getDB(record.id).then(function (id) {
+        if(id) reject('trying to add record with id that persists in database')
+        let newrec = new TodoModel(record);
+        newrec.save(function (savingerr, record) {
+            if(savingerr){
+                reject(savingerr)
+            }
+            resolve(record)
+        })
+    }).catch(err => console.log('new record\'s id failed to be verified in database before saving with following error (escalated): \n', err))
+  })
 }
 
-getDB(23).then(res => {console.log('promised',res)
-}).catch(err => console.log(err));
+function updDB(record){
+    return new Promise( function (resolve,reject) {
+        getDB(record.id).then(function (id,err) {
+
+        })
+    })
+}
+//updating with validation
+
+// getDB(23).then(res => {console.log('promised',res)
+// }).catch(err => console.log(err));
 //remove
 function removeDB(record){
     return new Promise(function(resolve, reject){
@@ -95,9 +106,9 @@ function removeDB(record){
 }
 
 //removeDB({title: 'data from node server four 23'})
-removeDB({title: 'data from node server four 23'})
-    .then(res =>console.log(res))
-    .catch(err => console.log(err));
+// removeDB({title: 'data from node server four 23'})
+//     .then(res =>console.log(res))
+//     .catch(err => console.log(err));
 
 //fake DB
 let pseudoDB = [{
