@@ -32,27 +32,45 @@ let TodoModel=  mongoose.model('SomeModel', TodoSchema );
 
 //testing
 (function populateDB() {
-    for (let i = 50; i < 52; i++) {
+    for (let i = 1; i < 52; i++) {
         addDB({
             id: i,
             title: `data from node server four ${i}`,
             meta: 800,
-            completed: true,
+            completed: i % 2==0,
             todoDate: 0
         },false).then(res => console.log(res._id)).catch(err=>console.log('failed to get added id\'s due to adding errors',err))
 
     }
-})()
+});
 
-//find
-function getDB(id) {
+// console.log('is it Promise?',TodoModel.find({id: 1}, 'title').then(function (err, res) {
+//     if(err) console.log(err)
+//     console.log(res)
+// }));
+
+//get all records
+function getAllDB(){
     return new Promise(function (resolve, reject) {
-        TodoModel.find({id: id}, 'title', function (err, res) {
+        TodoModel.find({}, function (err, res) {
+            resolve(res)
+        })
+    })
+}
+//testing
+// getAllDB().then(console.log)
+
+//getDB record by id - helper (promise wrapped)
+function getById(id) {
+    return new Promise(function (resolve, reject) {
+        TodoModel.find({id: id}, 'id', function (err, res) {
             if (err) {
-                reject(err)
+                reject(err);
+                return
             }
             if (res.length>1){
-                reject(`there is more than one document found with similar id found \n,${res}`)
+                reject(`there is more than one document found with similar id found \n,${res}`);
+                return
             }
             if (res.length == 0){
                 resolve(false)
@@ -63,14 +81,14 @@ function getDB(id) {
 
 }
 // testing
+//getDB(3).then(console.log)
 
-
-//adding with validation
+//adding\updating with validation
 function addDB(record, update){
     //maybe add some validation of arrived data record?
     return new Promise(function (resolve,reject) {
-        //retrieving dbrecord record from database
-        getDB(record.id).then(function (dbrecord) {
+        //retrieving dbrecord  from the database if presented
+        getById(record.id).then(function (dbrecord) {
             let newrec = new TodoModel(record);
             //not suitable case - avoid to updates for not presented record
 
@@ -100,14 +118,20 @@ function addDB(record, update){
 }
 
 
-// getDB(23).then(res => {console.log('promised',res)
+// getById(23).then(res => {console.log('promised',res)
 // }).catch(err => console.log(err));
 //remove
 function removeDB(record){
     return new Promise(function(resolve, reject){
         TodoModel.deleteOne(record, function (err, result) {
-            if(err) reject('DB error occured',err);
-            if(result.n == 0) reject('no records were deleted');
+            if(err){
+                reject('DB error occured',err);
+                return
+            }
+            if(result.n == 0){
+                reject('no records were deleted');
+                return
+            }
             resolve(result)
     })
 })
@@ -120,28 +144,28 @@ function removeDB(record){
 //     .catch(err => console.log(err));
 
 //fake DB
-let pseudoDB = [{
-    id: 0,
-    title: 'data from node server one',
-    meta: 800,
-    completed: true,
-    todoDate:0
-},
-    {
-        id: 1,
-        title: 'data from node server two',
-        meta: 800,
-        completed: true,
-        todoDate:0
-    },
-    {
-        id: 2,
-        title: 'data from node server three',
-        meta: 80,
-        completed: false,
-        todoDate:0
-
-    }];
+// let pseudoDB = [{
+//     id: 0,
+//     title: 'data from node server one',
+//     meta: 800,
+//     completed: true,
+//     todoDate:0
+// },
+//     {
+//         id: 1,
+//         title: 'data from node server two',
+//         meta: 800,
+//         completed: true,
+//         todoDate:0
+//     },
+//     {
+//         id: 2,
+//         title: 'data from node server three',
+//         meta: 80,
+//         completed: false,
+//         todoDate:0
+//
+//     }];
 
 function isRestURL(request){
     let idfilter = /\/restapi\/?(\d+)?$/;
@@ -247,9 +271,9 @@ createServer((request, response) => {
 ///GET handler from REST url - without htm building things
 RESTmethods.GET = async function(request) {
     console.log('RESTmethods.GET gett', request.url);
-
+    let db = await getAllDB();
     return {
-        status: 200, body: JSON.stringify(pseudoDB)
+        status: 200, body: JSON.stringify(db)
     }
 
 };
