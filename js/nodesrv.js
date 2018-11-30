@@ -22,7 +22,6 @@ let db = mongoose.connection;
 db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 let Schema = mongoose.Schema;
 let TodoSchema = new Schema({
-    id: 0,
     title: '',
     meta: 0,
     completed: false,

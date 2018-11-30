@@ -46,7 +46,7 @@ var app = app || {};
         url: '/restapi', //to fetch/manipulate collection
 
         comparator: function( todo ) {
-            return todo.get('id');
+            return todo.get('_id');
         },
         //lets fetch before
         // nextOrder: function() {
