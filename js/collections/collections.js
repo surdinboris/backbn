@@ -42,12 +42,13 @@ var app = app || {};
     // //// my net collection
 
     var NetCollection = Backbone.Collection.extend({
-        model: app.Netc,
+        model: app.Netm,
         url: '/restapi', //to fetch/manipulate collection
 
         comparator: function( todo ) {
             return todo.get('id');
         },
+        //lets fetch before
         // nextOrder: function() {
         //     if ( !this.length ) {
         //         return 1;

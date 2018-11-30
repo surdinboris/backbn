@@ -58,12 +58,12 @@ function getAllDB(){
     })
 }
 //testing
-// getAllDB().then(console.log)
+//getAllDB().then(console.log)
 
 //getDB record by id - helper (promise wrapped)
 function getById(id) {
     return new Promise(function (resolve, reject) {
-        TodoModel.find({id: id}, 'id', function (err, res) {
+        TodoModel.find({_id: id}, function (err, res) {
             if (err) {
                 reject(err);
                 return
@@ -169,11 +169,11 @@ function removeDB(record){
 //     }];
 
 function isRestURL(request){
-    let idfilter = /\/restapi\/?(\d+)?$/;
+    let idfilter = /\/restapi\/?(\w+)?$/;
     let result=idfilter.exec(request);
-    if(result && result[1]) {
-        return result[1]
-    }
+    // if(result && result[1]) {
+    //     return result[1]
+    // }
     return result
 }
 
@@ -235,20 +235,17 @@ function pipeStream(from, to) {
 //console.log(isRestURL('/restapi'))
 //console.log(isRestURL('/restapi/2'))
 //for info - from backbone's rest api
-var methodMap = {
-    'create': 'POST',
-    'update': 'PUT',
-    'patch':  'PATCH',
-    'delete': 'DELETE',
-    'read':   'GET'
-};
+// url             HTTP Method  Operation
+// /api/books      GET          Get an array of all books
+// /api/books/:id  GET          Get the book with id of :id
+// /api/books      POST         Add a new book and return the book with an id attribute added
+// /api/books/:id  PUT          Update the book with id of :id
+// /api/books/:id  DELETE       Delete the book with id of :id
 
 createServer((request, response) => {
     //Router - checking whatever its a regular request or rest api
-    console.log('node got',request.url, request.method)
     let handler = methods[request.method] || notAllowed;
-
-    if (isRestURL(request.url)) {
+        if (isRestURL(request.url)) {
         handler = RESTmethods[request.method] || notAllowed;
     }
 
@@ -271,10 +268,16 @@ createServer((request, response) => {
 
 ///GET handler from REST url - without htm building things
 RESTmethods.GET = async function(request) {
-    console.log('RESTmethods.GET gett', request.url);
-    let db = await getAllDB();
+    let id= isRestURL(request.url)[1];
+    console.log('RESTmethods.GET gett', id );
+    let resp;
+    if(id){
+        resp = await getById(id);
+    }
+    else resp = await getAllDB();
+
     return {
-        status: 200, body: JSON.stringify(db)
+        status: 200, body: JSON.stringify(resp)
     }
 
 };
@@ -288,16 +291,19 @@ RESTmethods.POST = async function(request) {
         responseString += data;
     });
     request.on("end", async function () {
+        console.log(JSON.parse(responseString));
         //appending to model
         //updateDB(JSON.parse(responseString));
         //append with
-        let all = await getAllDB();
-        let highest=0;
-        all.forEach(el=>{
-            if(el.id > highest)
-                highest=el.id
-        });
-        addDB(Object.assign({},JSON.parse(responseString),{id:highest+1}), false);
+        // let all = await getAllDB();
+        // let highest=0;
+        // all.forEach(el=>{
+        //     if(el.id > highest)
+        //         highest=el.id
+        // });
+        addDB(JSON.parse(responseString), false)
+            .then(newRec=>console.log('db updated', newRec));
+
     });
 
     return  {

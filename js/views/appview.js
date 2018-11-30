@@ -13,10 +13,16 @@ var app = app || {};
 
         create: function (ev) {
             if(this.$input.val().trim()!=''){
-                app.Netc.create({
-                    // id:app.Netc.nextOrder(),
-                    title: this.$input.val(),
-                })
+                //console.log('new boooook', new app.Netm( {title: this.$input.val()}));
+                app.Netc.add(new app.Netm( {title: this.$input.val()}));
+                // app.Netc.create({
+                //     //id:app.Netc.nextOrder(),
+                //     title: this.$input.val(),
+                // });
+
+                //newModel.fetch();
+                this.$input.val('');
+
             }
             },
 
@@ -63,7 +69,7 @@ var app = app || {};
         },
         edit: function (ev) {
             this.$el.addClass('editing');
-            // console.log('edit',this.$el);
+             console.log('edit',this.$el);
             this.$input.focus();
         },
         toggle: function (ev) {
@@ -89,7 +95,8 @@ var app = app || {};
         },
 
         initialize:  function(){
-            console.log('ItemsView view initialized');
+            console.log('ItemsView view initialized',this.model);
+
             this.listenTo(this.model, 'change', this.render);
             this.listenTo(this.model, 'destroy', this.remove);
        },

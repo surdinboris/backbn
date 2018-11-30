@@ -2,7 +2,7 @@
 var app = app || {};
 
 (function () {
-    app.Netc = Backbone.Model.extend ({
+    app.Netm = Backbone.Model.extend ({
         defaults: {
             title: '',
             meta: 900,
@@ -10,14 +10,16 @@ var app = app || {};
             todoDate:0
 
         },
+        url: '/restapi',
         toggle: function() {
+
             this.save({
                 completed: !this.get('completed')
             });
         },
         initialize: function () {
 
-            console.log('Nettitle model initialized');
+            console.log('Netm initialized');
 
         }
 
