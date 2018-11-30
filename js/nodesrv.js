@@ -34,7 +34,7 @@ let TodoModel=  mongoose.model('SomeModel', TodoSchema );
 (function populateDB() {
     for (let i = 1; i < 52; i++) {
         addDB({
-            id: i,
+
             title: `data from node server four ${i}`,
             meta: 800,
             completed: i % 2==0,
@@ -169,7 +169,7 @@ function removeDB(record){
 //     }];
 
 function isRestURL(request){
-    let idfilter = /\/restapi\/?(\w+)?$/;
+    let idfilter = /\/restapi?(\/)?:?(\w+)?$/;
     let result=idfilter.exec(request);
     // if(result && result[1]) {
     //     return result[1]
@@ -268,7 +268,7 @@ createServer((request, response) => {
 
 ///GET handler from REST url - without htm building things
 RESTmethods.GET = async function(request) {
-    let id= isRestURL(request.url)[1];
+    let id= isRestURL(request.url)[2];
     console.log('RESTmethods.GET gett', id );
     let resp;
     if(id){

@@ -12,7 +12,6 @@ var app = app || {};
         },
         url: '/restapi',
         toggle: function() {
-
             this.save({
                 completed: !this.get('completed')
             });

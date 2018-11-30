@@ -47,7 +47,7 @@ var app = app || {};
         addAll: function() {
             console.log('addAll');
             $('#todoapp').html('');
-            app.Todos.each(this.addOne, this);
+            app.Netc.each(this.addOne, this);
         },
 
     })
