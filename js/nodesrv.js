@@ -49,6 +49,7 @@ let TodoModel=  mongoose.model('SomeModel', TodoSchema );
 // }));
 
 //get all records
+
 function getAllDB(){
     return new Promise(function (resolve, reject) {
         TodoModel.find({}, function (err, res) {
@@ -60,9 +61,9 @@ function getAllDB(){
 //getAllDB().then(console.log)
 
 //getDB record by id - helper (promise wrapped)
-function getById(id) {
+function getById(_id) {
     return new Promise(function (resolve, reject) {
-        TodoModel.find({_id: id}, function (err, res) {
+        TodoModel.find({_id: _id}, function (err, res) {
             if (err) {
                 reject(err);
                 return
@@ -87,7 +88,7 @@ function addDB(record, update){
     //maybe add some validation of arrived data record?
     return new Promise(function (resolve,reject) {
         //retrieving dbrecord  from the database if presented
-        getById(record.id).then(function (dbrecord) {
+        getById(record._id).then(function (dbrecord) {
             let newrec = new TodoModel(record);
             //not suitable case - avoid to updates for not presented record
 
@@ -243,6 +244,7 @@ function pipeStream(from, to) {
 
 createServer((request, response) => {
     //Router - checking whatever its a regular request or rest api
+
     let handler = methods[request.method] || notAllowed;
         if (isRestURL(request.url)) {
         handler = RESTmethods[request.method] || notAllowed;
@@ -256,17 +258,29 @@ createServer((request, response) => {
         })
         ///////{body, status = 200, type = "text/plain"} ---unpackingwith fallbacks  for object returned from handler
         .then(({body, status = 200, type = "text/html"}) => {
+
             response.writeHead(status, {"Content-Type": type});
-            if (body && body.pipe) body.pipe(response);
-            else response.end(body);
+            if (body && body.pipe) {
+                body.pipe(response)}
+            else response.end( body);
         });
 
 
 }).listen(5000);
 
-
+// function addId(data) {
+//     const mp = {};
+//     console.log(data)
+//     Object.keys(data).forEach ((k) =>  { mp[k]= data[k]});
+//     if(mp._id)
+//         mp.id=mp._id;
+//     console.log(data);
+//     return JSON.stringify(mp);
+//}
 ///GET handler from REST url - without htm building things
+
 RESTmethods.GET = async function(request) {
+
     let id= isRestURL(request.url)[2];
     console.log('RESTmethods.GET gett', id );
     let resp;
@@ -274,6 +288,7 @@ RESTmethods.GET = async function(request) {
         resp = await getById(id);
     }
     else resp = await getAllDB();
+
 
     return {
         status: 200, body: JSON.stringify(resp)
@@ -290,7 +305,7 @@ RESTmethods.POST = async function(request) {
         responseString += data;
     });
     request.on("end", async function () {
-        console.log(JSON.parse(responseString));
+        console.log('RESTmethods.POST new',JSON.parse(responseString));
         //appending to model
         //updateDB(JSON.parse(responseString));
         //append with
@@ -316,7 +331,7 @@ RESTmethods.PUT = async function (request) {
         responseString += data;
     });
     request.on("end", function () {
-        console.log(JSON.parse(responseString));
+        console.log('RESTmethods.PUT update',JSON.parse(responseString));
         //appending to model
         //updateDB(JSON.parse(responseString));
         addDB(JSON.parse(responseString), true);
