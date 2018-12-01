@@ -13,14 +13,15 @@ var app = app || {};
 
         create: function (ev) {
             if(this.$input.val().trim()!=''){
-                //console.log('new boooook', new app.Netm( {title: this.$input.val()}));
-                app.Netc.add(new app.Netm( {title: this.$input.val()}));
-                // app.Netc.create({
-                //     //id:app.Netc.nextOrder(),
-                //     title: this.$input.val(),
-                // });
+              //  console.log('new boooook', new app.Netm( {title: this.$input.val()}));
+              // let nerRec= new app.Netm( {title: this.$input.val()});
+              //   nerRec.save()
+                app.Netc.create({
+                    //id:app.Netc.nextOrder(),
+                    title: this.$input.val(),
+                });
 
-                //newModel.fetch();
+
                 this.$input.val('');
 
             }

@@ -270,13 +270,12 @@ createServer((request, response) => {
 
 // function addId(data) {
 //     const mp = {};
-//     console.log(data)
 //     Object.keys(data).forEach ((k) =>  { mp[k]= data[k]});
 //     if(mp._id)
 //         mp.id=mp._id;
 //     console.log(data);
 //     return JSON.stringify(mp);
-//}
+// }
 ///GET handler from REST url - without htm building things
 
 RESTmethods.GET = async function(request) {
