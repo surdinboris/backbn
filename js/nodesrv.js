@@ -245,25 +245,35 @@ function pipeStream(from, to) {
 createServer((request, response) => {
     //Router - checking whatever its a regular request or rest api
 
+
     let handler = methods[request.method] || notAllowed;
         if (isRestURL(request.url)) {
         handler = RESTmethods[request.method] || notAllowed;
     }
+    //
+        // if(methods[request.method] == 'POST' || 'post'){
+        //         console.log('async handler executed');
+        //     handler(request).then(resconsole.log)
+        // }
 
     //handle request with appropriate method
-    handler(request)
-        .catch(error => {
-            if (error.status != null) return error;
-            return {body: String(error), status: 500};
-        })
-        ///////{body, status = 200, type = "text/plain"} ---unpackingwith fallbacks  for object returned from handler
-        .then(({body, status = 200, type = "text/html"}) => {
+    // else {
+        handler(request)
+            .catch(error => {
+                if (error.status != null) return error;
+                return {body: String(error), status: 500};
+            })
+            ///////{body, status = 200, type = "text/plain"} ---unpackingwith fallbacks  for object returned from handler
+            .then(({body, status = 200, type = "text/html"}) => {
+                response.writeHead(status, {"Content-Type": type});
+                console.log('new body',body)
+                if (body && body.pipe) {
 
-            response.writeHead(status, {"Content-Type": type});
-            if (body && body.pipe) {
-                body.pipe(response)}
-            else response.end( body);
-        });
+                    body.pipe(response)
+                }
+                else response.end(body);
+            });
+  //  }
 
 
 }).listen(5000);
@@ -298,31 +308,47 @@ RESTmethods.GET = async function(request) {
 //to decside if update or new item arrived
 
 //create
-RESTmethods.POST = async function(request) {
-    var responseString = "";
-    request.on("data", function (data) {
-        responseString += data;
-    });
-    request.on("end", async function () {
-        console.log('RESTmethods.POST new',JSON.parse(responseString));
-        //appending to model
-        //updateDB(JSON.parse(responseString));
-        //append with
-        // let all = await getAllDB();
-        // let highest=0;
-        // all.forEach(el=>{
-        //     if(el.id > highest)
-        //         highest=el.id
-        // });
-        addDB(JSON.parse(responseString), false)
-            .then(newRec=>console.log('db updated', newRec));
-
-    });
-
-    return  {
-        status: 200, body: 'ok'
-    }
+RESTmethods.POST = function(request) {
+    return new Promise( function(resolve,reject){
+        let responseString = "";
+        request.on("data", function (data) {
+            responseString += data;
+        });
+        request.on("end",  function () {
+            console.log('RESTmethods.POST new',JSON.parse(responseString));
+            addDB(JSON.parse(responseString), false).then(newRec=>{
+                resolve({
+                    status: 200, body: JSON.stringify(newRec)
+            });
+            })
+    })
+})
 };
+// RESTmethods.POST = async function(request) {
+//     var responseString = "";
+//
+//     request.on("data", function (data) {
+//         responseString += data;
+//     });
+//     request.on("end", async function () {
+//         console.log('RESTmethods.POST new',JSON.parse(responseString));
+//         //appending to model
+//         //updateDB(JSON.parse(responseString));
+//         //append with
+//         // let all = await getAllDB();
+//         // let highest=0;
+//         // all.forEach(el=>{
+//         //     if(el.id > highest)
+//         //         highest=el.id
+//         // });
+//         addDB(JSON.parse(responseString), false)
+//             .then(newRec=>console.log('db updated', newRec));
+//
+//     })
+//     return  {
+//         status: 200, body: 'ok'
+//     }
+// };
 //full attrs update (patch:false on client)
 RESTmethods.PUT = async function (request) {
     var responseString = "";
