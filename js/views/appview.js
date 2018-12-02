@@ -24,7 +24,12 @@ var app = app || {};
             this.$input = this.$('#new-todo');
             this.listenTo(app.Netc, 'add', this.addOne);
             this.listenTo(app.Netc, 'reset', this.addAll);
-            app.Netc.fetch();
+            app.Netc.fetch({
+                success: function (collection, response, options) {
+                    //options.xhr.getAllResponseHeaders(); // To get all the headers
+                    console.log('header ->>',options.xhr.getResponseHeader('ETag')); // To get just one needed header
+                }
+            })
         },
 
         ///rendering newly arrived elements (applying to DOM one-by-one)

@@ -200,8 +200,7 @@ createServer((request, response) => {
                 return {body: String(error), status: 500};
             })
             ///////{body, status = 200, type = "text/plain"} ---unpackingwith fallbacks  for object returned from handler
-            .then(({body, status = 203, type = "text/html", ETag='new-tag' }) => {
-                console.log('resp -----',status, {"Content-Type": type,"ETag": ETag} );
+            .then(({body, status = 200, type = "text/html", ETag='new-tag' }) => {
                 response.writeHead(status, {"Content-Type": type,"ETag": ETag});
                 if (body && body.pipe) {
 
