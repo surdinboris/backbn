@@ -98,7 +98,7 @@ function addDB(record, update){
             }
             //in case of id was found but update not allowed(adding new record case)
             if (dbrecord && !update){
-                console.log('dbrecord',dbrecord)
+                console.log('dbrecord',dbrecord);
                 reject('trying to add record with id that persists in database')
                 return
             }
@@ -147,15 +147,13 @@ function removeDB(record){
 function isRestURL(request){
     let idfilter = /\/restapi\/?(\w+)?$/;
     let result=idfilter.exec(request);
-    // if(result && result[1]) {
-    //     return result[1]
-    // }
+    console.log('isRestURL', )
     return result
 }
 
 
 //response
-async function notAllowed(request) {
+function notAllowed(request) {
     return {
         //status: 405,
         body: `Method ${request.method} not allowed.`
@@ -268,7 +266,7 @@ RESTmethods.PUT = function(request) {
     })
 };
 
-//to be rewritten!!!!!!!!!
+//deleting data from db based on /restapi/id request
 RESTmethods.DELETE = function(request) {
     let requestId={_id:isRestURL(request.url)[1]};
     console.log('RESTmethods.DELETE delete', requestId);
