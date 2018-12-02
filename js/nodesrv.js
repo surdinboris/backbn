@@ -28,6 +28,7 @@ let TodoSchema = new Schema({
     todoDate:0
 });
 let TodoModel=  mongoose.model('SomeModel', TodoSchema );
+let Etag =0;
 
 //testing
 (function populateDB() {
@@ -88,7 +89,8 @@ function addDB(record, update){
     //maybe add some validation of arrived data record?
     return new Promise(function (resolve,reject) {
         //retrieving dbrecord  from the database if presented
-        getById(record._id).then(function (dbrecord) {
+        getById(record._id).catch(err => console.log('new record\'s id failed to be verified in database before saving with following error (escalated): \n', err))
+            .then(function (dbrecord) {
             let newrec = new TodoModel(record);
             //not suitable case - avoid to updates for not presented record
 
@@ -112,9 +114,10 @@ function addDB(record, update){
                 if (savingerr) {
                     reject(savingerr)
                 }
+                Etag+=1;
                 resolve(record)
             })
-        }).catch(err => console.log('new record\'s id failed to be verified in database before saving with following error (escalated): \n', err))
+        })
     }).catch(err => console.log('addDB error: \n', err))
 }
 
@@ -200,7 +203,7 @@ createServer((request, response) => {
                 return {body: String(error), status: 500};
             })
             ///////{body, status = 200, type = "text/plain"} ---unpackingwith fallbacks  for object returned from handler
-            .then(({body, status = 200, type = "text/html", ETag='new-tag' }) => {
+            .then(({body, status = 200, type = "text/html", ETag='' }) => {
                 response.writeHead(status, {"Content-Type": type,"ETag": ETag});
                 if (body && body.pipe) {
 
@@ -225,7 +228,7 @@ RESTmethods.GET = async function(request) {
 
 
     return {
-        status: 200, body: JSON.stringify(resp), ETag: "version"
+        status: 200, body: JSON.stringify(resp), ETag: Etag
     }
 
 };
