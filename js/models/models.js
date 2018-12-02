@@ -16,11 +16,12 @@ var app = app || {};
                 completed: !this.get('completed')
             });
         },
+      //  urlRoot: '/restapi',
+
         initialize: function () {
 
-            console.log('Netm initialized', this);
-
         },
+
         parse: function( response ) {
             response.id = response._id;
             return response;

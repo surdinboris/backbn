@@ -153,7 +153,7 @@ function isRestURL(request){
 
 
 //response
-function notAllowed(request) {
+async function notAllowed(request) {
     return {
         //status: 405,
         body: `Method ${request.method} not allowed.`
@@ -184,12 +184,13 @@ function pipeStream(from, to) {
 
 createServer((request, response) => {
     //Router - checking whatever its a regular request or rest api
-
-
+    let version='veeersion';
+    console.log('request.method',request.method)
     let handler = methods[request.method] || notAllowed;
         if (isRestURL(request.url)) {
         handler = RESTmethods[request.method] || notAllowed;
     }
+
 
     //handle request with appropriate method
     // else {
@@ -199,9 +200,8 @@ createServer((request, response) => {
                 return {body: String(error), status: 500};
             })
             ///////{body, status = 200, type = "text/plain"} ---unpackingwith fallbacks  for object returned from handler
-            .then(({body, status = 200, type = "text/html"}) => {
-                response.writeHead(status, {"Content-Type": type});
-                console.log('new body',body)
+            .then(({body, status = 203, type = "text/html", ETag }) => {
+                response.writeHead(status, {"Content-Type": type}, {"ETag":ETag});
                 if (body && body.pipe) {
 
                     body.pipe(response)
@@ -216,7 +216,7 @@ createServer((request, response) => {
 RESTmethods.GET = async function(request) {
 
     let id= isRestURL(request.url)[1];
-    console.log('RESTmethods.GET gett', id );
+    console.log('RESTmethods.GET ', id || 'no id');
     let resp;
     if(id){
         resp = await getById(id);
@@ -225,7 +225,7 @@ RESTmethods.GET = async function(request) {
 
 
     return {
-        status: 200, body: JSON.stringify(resp)
+        status: 200, body: JSON.stringify(resp), ETag: "version"
     }
 
 };
