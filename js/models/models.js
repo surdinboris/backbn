@@ -10,7 +10,7 @@ var app = app || {};
             todoDate:0
 
         },
-        url: '/restapi',
+       // url: '/restapi',
         toggle: function() {
             this.save({
                 completed: !this.get('completed')

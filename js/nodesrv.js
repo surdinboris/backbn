@@ -144,32 +144,8 @@ function removeDB(record){
 //     .then(res =>console.log(res))
 //     .catch(err => console.log(err));
 
-//fake DB
-// let pseudoDB = [{
-//     id: 0,
-//     title: 'data from node server one',
-//     meta: 800,
-//     completed: true,
-//     todoDate:0
-// },
-//     {
-//         id: 1,
-//         title: 'data from node server two',
-//         meta: 800,
-//         completed: true,
-//         todoDate:0
-//     },
-//     {
-//         id: 2,
-//         title: 'data from node server three',
-//         meta: 80,
-//         completed: false,
-//         todoDate:0
-//
-//     }];
-
 function isRestURL(request){
-    let idfilter = /\/restapi?(\/)?:?(\w+)?$/;
+    let idfilter = /\/restapi\/?(\w+)?$/;
     let result=idfilter.exec(request);
     // if(result && result[1]) {
     //     return result[1]
@@ -177,30 +153,6 @@ function isRestURL(request){
     return result
 }
 
-//helpers
-//helper for upd database
-// function updateDB(rec) {
-//     if(!rec.id){
-//         console.log('arrived data without id', rec)
-//         return
-//     }
-//     let index= -1;
-//     pseudoDB.forEach(r=>{
-//         if(r.id == rec.id){
-//             index=pseudoDB.indexOf(r)
-//         }
-//     });
-//     if(index > -1){
-//         pseudoDB.splice(index,1,rec);
-//         // pseudoDB.push(rec);
-//         console.log('pseudoDB record updated', pseudoDB)
-//     }
-//     else {
-//
-//         pseudoDB.push(rec);
-//         console.log('pseudoDB record appended', pseudoDB);
-//     }
-// }
 
 //response
 async function notAllowed(request) {
@@ -231,16 +183,6 @@ function pipeStream(from, to) {
         from.pipe(to);
     });
 }
-// accept urls in format '/restapi' or '/restapi/2' test:
-//console.log(isRestURL('/restapi'))
-//console.log(isRestURL('/restapi/2'))
-//for info - from backbone's rest api
-// url             HTTP Method  Operation
-// /api/books      GET          Get an array of all books
-// /api/books/:id  GET          Get the book with id of :id
-// /api/books      POST         Add a new book and return the book with an id attribute added
-// /api/books/:id  PUT          Update the book with id of :id
-// /api/books/:id  DELETE       Delete the book with id of :id
 
 createServer((request, response) => {
     //Router - checking whatever its a regular request or rest api
@@ -250,11 +192,6 @@ createServer((request, response) => {
         if (isRestURL(request.url)) {
         handler = RESTmethods[request.method] || notAllowed;
     }
-    //
-        // if(methods[request.method] == 'POST' || 'post'){
-        //         console.log('async handler executed');
-        //     handler(request).then(resconsole.log)
-        // }
 
     //handle request with appropriate method
     // else {
@@ -278,19 +215,9 @@ createServer((request, response) => {
 
 }).listen(5000);
 
-// function addId(data) {
-//     const mp = {};
-//     Object.keys(data).forEach ((k) =>  { mp[k]= data[k]});
-//     if(mp._id)
-//         mp.id=mp._id;
-//     console.log(data);
-//     return JSON.stringify(mp);
-// }
-///GET handler from REST url - without htm building things
-
 RESTmethods.GET = async function(request) {
 
-    let id= isRestURL(request.url)[2];
+    let id= isRestURL(request.url)[1];
     console.log('RESTmethods.GET gett', id );
     let resp;
     if(id){
@@ -324,63 +251,40 @@ RESTmethods.POST = function(request) {
     })
 })
 };
-// RESTmethods.POST = async function(request) {
-//     var responseString = "";
-//
-//     request.on("data", function (data) {
-//         responseString += data;
-//     });
-//     request.on("end", async function () {
-//         console.log('RESTmethods.POST new',JSON.parse(responseString));
-//         //appending to model
-//         //updateDB(JSON.parse(responseString));
-//         //append with
-//         // let all = await getAllDB();
-//         // let highest=0;
-//         // all.forEach(el=>{
-//         //     if(el.id > highest)
-//         //         highest=el.id
-//         // });
-//         addDB(JSON.parse(responseString), false)
-//             .then(newRec=>console.log('db updated', newRec));
-//
-//     })
-//     return  {
-//         status: 200, body: 'ok'
-//     }
-// };
-//full attrs update (patch:false on client)
-RESTmethods.PUT = async function (request) {
-    var responseString = "";
-    request.on("data", function (data) {
-        responseString += data;
-    });
-    request.on("end", function () {
-        console.log('RESTmethods.PUT update',JSON.parse(responseString));
-        //appending to model
-        //updateDB(JSON.parse(responseString));
-        addDB(JSON.parse(responseString), true);
-    });
-    return {
-        status: 200, body: 'ok'   }
-    };
+RESTmethods.PUT = function(request) {
+    return new Promise( function(resolve,reject){
+        let responseString = "";
+        request.on("data", function (data) {
+            responseString += data;
+        });
+        request.on("end",  function () {
+            console.log('RESTmethods.PUT update',JSON.parse(responseString));
+            addDB(JSON.parse(responseString), true).then(newRec=>{
+                resolve({
+                    status: 200, body: JSON.stringify(newRec)
+                });
+            })
+        })
+    })
+};
 
-RESTmethods.DELETE = async function(request) {
-    console.log('RESTmethods.DELETE delete', request.url);
-    let id = isRestURL(request.url);
-    let index = -1;
-    pseudoDB.forEach(record=> {
-    if(record.id == id){
-        index= pseudoDB.indexOf(record)
-    }});
-    if(index > -1){
-         pseudoDB.splice(index,1)
-    }
-        console.log(pseudoDB)
-    return {
-        status: 200, body: 'ok'
-    }
-
+//to be rewritten!!!!!!!!!
+RESTmethods.DELETE = function(request) {
+    let requestId={_id:isRestURL(request.url)[1]};
+    console.log('RESTmethods.DELETE delete', requestId);
+    return new Promise( function(resolve,reject){
+        let responseString = "";
+        request.on("data", function (data) {
+            responseString += data;
+        });
+        request.on("end",  function () {
+           removeDB(requestId, false).then(newRec=>{
+                resolve({
+                    status: 200, body: "ok"
+                });
+            })
+        })
+    })
 };
 
 ///GET handler
@@ -417,6 +321,103 @@ methods.GET = async function(request) {
 };
 
 
+
+//fake DB
+// let pseudoDB = [{
+//     id: 0,
+//     title: 'data from node server one',
+//     meta: 800,
+//     completed: true,
+//     todoDate:0
+// },
+//     {
+//         id: 1,
+//         title: 'data from node server two',
+//         meta: 800,
+//         completed: true,
+//         todoDate:0
+//     },
+//     {
+//         id: 2,
+//         title: 'data from node server three',
+//         meta: 80,
+//         completed: false,
+//         todoDate:0
+//
+//     }];
+
+//
+// if(methods[request.method] == 'POST' || 'post'){
+//         console.log('async handler executed');
+//     handler(request).then(resconsole.log)
+// }
+
+//to be rewritten!!!!!!!!!
+// RESTmethods.DELETE = async function(request) {
+//     console.log('RESTmethods.DELETE delete', request.url);
+//     let id = isRestURL(request.url);
+//     let index = -1;
+//     pseudoDB.forEach(record=> {
+//         if(record.id == id){
+//             index= pseudoDB.indexOf(record)
+//         }});
+//     if(index > -1){
+//         pseudoDB.splice(index,1)
+//     }
+//     console.log(pseudoDB)
+//     return {
+//         status: 200, body: 'ok'
+//     }
+//
+// };
+
+// accept urls in format '/restapi' or '/restapi/:2' test:
+//console.log(isRestURL('/restapi'))
+//console.log(isRestURL('/restapi/2'))
+//for info - from backbone's rest api
+// url             HTTP Method  Operation
+// /api/books      GET          Get an array of all books
+// /api/books/:id  GET          Get the book with id of :id
+// /api/books      POST         Add a new book and return the book with an id attribute added
+// /api/books/:id  PUT          Update the book with id of :id
+// /api/books/:id  DELETE       Delete the book with id of :id
+
+// function addId(data) {
+//     const mp = {};
+//     Object.keys(data).forEach ((k) =>  { mp[k]= data[k]});
+//     if(mp._id)
+//         mp.id=mp._id;
+//     console.log(data);
+//     return JSON.stringify(mp);
+// }
+///GET handler from REST url - without htm building things
+
+//helpers
+//helper for upd database
+// function updateDB(rec) {
+//     if(!rec.id){
+//         console.log('arrived data without id', rec)
+//         return
+//     }
+//     let index= -1;
+//     pseudoDB.forEach(r=>{
+//         if(r.id == rec.id){
+//             index=pseudoDB.indexOf(r)
+//         }
+//     });
+//     if(index > -1){
+//         pseudoDB.splice(index,1,rec);
+//         // pseudoDB.push(rec);
+//         console.log('pseudoDB record updated', pseudoDB)
+//     }
+//     else {
+//
+//         pseudoDB.push(rec);
+//         console.log('pseudoDB record appended', pseudoDB);
+//     }
+// }
+
+//trash
 // methods.DELETE = async function(request) {
 //     let path = toFSpath(request.url);
 //     let stats;

@@ -6,26 +6,19 @@ var app = app || {};
     app.AppView = Backbone.View.extend({
         //adding template
         todoTpl: _.template( $('#item-template').html()),
-
         el: '#todoapp',
-
         events: {'blur input.creating':'create'},
 
         create: function (ev) {
-            if(this.$input.val().trim()!=''){
-              //  console.log('new boooook', new app.Netm( {title: this.$input.val()}));
-              // let nerRec= new app.Netm( {title: this.$input.val()});
-              //   nerRec.save()
+            if (this.$input.val().trim() != '') {
                 app.Netc.create({
-                    //id:app.Netc.nextOrder(),
+                    //no id needed - it will be returned from server db
+                    // id:app.Netc.nextOrder(),
                     title: this.$input.val(),
                 });
-
-
                 this.$input.val('');
-
             }
-            },
+        },
 
         initialize: function () {
             this.$input = this.$('#new-todo');
@@ -62,7 +55,7 @@ var app = app || {};
         tagName: 'div',
         events: {
             'blur input.edit':'close',
-            'click button.destroy':'delete',
+            'click button.destroy':'clear',
             'dblclick label': 'edit',
             'click input.toggle': 'toggle',
             'keypress .edit': 'updateOnEnter',
@@ -76,7 +69,8 @@ var app = app || {};
         toggle: function (ev) {
             this.model.toggle()
         },
-        delete: function(ev){
+        clear: function(ev){
+
             this.model.destroy()
         },
         close: function (ev) {
@@ -86,7 +80,7 @@ var app = app || {};
                 return;
             let deleted = target.className == 'destroy';
             if(deleted){
-                this.delete(ev)
+                this.clear(ev)
             }
             //closing
             this.$el.removeClass('editing');
@@ -97,7 +91,6 @@ var app = app || {};
 
         initialize:  function(){
             console.log('ItemsView view initialized',this.model);
-
             this.listenTo(this.model, 'change', this.render);
             this.listenTo(this.model, 'destroy', this.remove);
        },
