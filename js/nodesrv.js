@@ -1,4 +1,3 @@
-
 //creating server
 const {createServer} = require("http");
 const methods = Object.create(null);
@@ -28,8 +27,16 @@ let TodoSchema = new Schema({
     todoDate:0
 });
 let TodoModel=  mongoose.model('SomeModel', TodoSchema );
+//long polling
 let Etag =0;
+let waiting=[];
 
+function updatever(){
+    Etag++;
+    let response = DbResponse();
+    waiting.forEach(resolve => resolve(response));
+    waiting=[]
+}
 //testing
 (function populateDB() {
     for (let i = 1; i < 52; i++) {
@@ -43,11 +50,6 @@ let Etag =0;
 
     }
 });
-
-// console.log('is it Promise?',TodoModel.find({id: 1}, 'title').then(function (err, res) {
-//     if(err) console.log(err)
-//     console.log(res)
-// }));
 
 //get all records
 
@@ -114,7 +116,7 @@ function addDB(record, update){
                 if (savingerr) {
                     reject(savingerr)
                 }
-                Etag+=1;
+                updatever();
                 resolve(record)
             })
         })
@@ -150,7 +152,7 @@ function removeDB(record){
 function isRestURL(request){
     let idfilter = /\/restapi\/?(\w+)?$/;
     let result=idfilter.exec(request);
-    console.log('isRestURL', )
+    console.log('isRestURL', request)
     return result
 }
 
@@ -184,6 +186,17 @@ function pipeStream(from, to) {
         from.pipe(to);
     });
 }
+//long polling support
+function waitForChanges(time) {
+    return new Promise(resolve => {
+        waiting.push(resolve);
+        setTimeout(() => {
+            if (!this.waiting.includes(resolve)) return;
+            waiting = this.waiting.filter(r => r != resolve);
+            resolve({status: 304});
+        }, time * 1000);
+    });
+};
 
 createServer((request, response) => {
     //Router - checking whatever its a regular request or rest api
@@ -216,21 +229,43 @@ createServer((request, response) => {
 
 }).listen(5000);
 
-RESTmethods.GET = async function(request) {
-
-    let id= isRestURL(request.url)[1];
-    console.log('RESTmethods.GET ', id || 'no id');
+async function DbResponse(request){
+    let id;
     let resp;
-    if(id){
+
+    if(request){
+        id = isRestURL(request.url)[1];
+    };
+
+    if (id) {
         resp = await getById(id);
     }
-    else resp = await getAllDB();
-
-
+    else {
+        resp = await getAllDB();
+    }
     return {
         status: 200, body: JSON.stringify(resp), ETag: Etag
     }
+}
+//included long polling support
+//polling request must include
+RESTmethods.GET = async function (request) {
+    //get client version
+    let tag = /"(.*)"/.exec(request.headers["if-none-match"]);
+    //get client client's waiting time
+    let wait = /\bwait=(\d+)/.exec(request.headers["prefer"]);
 
+    //make db request and return fresh data in case of non conditional (regular) request or if
+    //version tag (request's "if-none-match" header) is not equal server's version (stored and returned as ETag)
+    if (!tag || tag[1] != Etag) {
+        return DbResponse(request);
+    }
+    //in opposite case and without waiting flag returning 'not changed code'
+    else if (!wait) {
+        return {status: 304};
+    } else {
+        return waitForChanges(Number(wait[1]));
+    }
 };
 //in this implementation an updateDB is enoch smart
 //to decside if update or new item arrived
@@ -290,9 +325,7 @@ RESTmethods.DELETE = function(request) {
 
 ///GET handler
 methods.GET = async function(request) {
-
     let path = toFSpath(request.url);
-
     //console.log('toFSpath',request.url,toFSpath(request.url))
     let stats;
     try {
