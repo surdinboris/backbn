@@ -27,41 +27,47 @@ var app = app || {};
             this.listenTo(app.Netc, 'add', this.addOne);
             this.listenTo(app.Netc, 'reset', this.addAll);
             //initialising - fetching data from server and starting to polling
-            app.Netc.fetch({
+
+            this.startpolling(app.Netc.fetch({
+
                 success: function (collection, response, options) {
+
                     //options.xhr.getAllResponseHeaders(); // To get all the headers
-                    console.log('header ->>',options.xhr.getResponseHeader('ETag')); // To get just one needed header
-                    (async function (update) {
-                        //fetchOK handler
-                        function fetchOK(url, options) {
-                            return fetch(url, options).then(response => {
-                                if (response.status < 400) return response;
-                                else throw new Error(response.statusText);
-                            });
-                        }
-                        let tag = undefined;
-                        for (;;) {
-                            let response;
-                            try {
-                                response = await fetchOK("/restapi/", {
-                                    headers: tag && {"If-None-Match": tag,
-                                        "Prefer": "wait=90"}
-                                });
-                            } catch (e) {
-                                console.log("Request failed: " + e);
-                                await new Promise(resolve => setTimeout(resolve, 500));
-                                continue;
-                            }
-                            console.log(response);
-                            if (response.status == 304) continue;
-                            tag = response.headers.get("ETag");
-                            update(await response.json());
-                        }
-                    })(console.log)
-                    // )
+                    // console.log('header ->>',options.xhr.getResponseHeader('ETag')); // To get just one needed header
+                    // console.log('headers ->>',options.xhr.getAllResponseHeaders()); // To get just one needed header
+
                 }
-            })
+            }))
         },
+
+        startpolling: async function () {
+               //fetchOK handler
+                function fetchOK(url, options) {
+                    return fetch(url, options).then(response => {
+                        if (response.status < 400) return response;
+                        else throw new Error(response.statusText);
+                    });
+                }
+                let tag = undefined;
+                for (;;) {
+                    let response;
+                    try {
+                        //
+                        response = await fetchOK("/restapi/up", {
+                            headers: tag && {"If-None-Match": tag,
+                                "Prefer": "wait=90"}
+                        });
+                    } catch (e) {
+                        console.log("Request failed: " + e);
+                        await new Promise(resolve => setTimeout(resolve, 500));
+                        continue;
+                    }
+                    console.log(response);
+                    if (response.status == 304) continue;
+                    tag = response.headers.get("ETag");
+                    app.Netc.fetch();
+                }
+            },
 
         ///rendering newly arrived elements (applying to DOM one-by-one)
         addOne: function( elem ) {

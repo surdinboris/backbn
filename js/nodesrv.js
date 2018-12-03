@@ -28,11 +28,11 @@ let TodoSchema = new Schema({
 });
 let TodoModel=  mongoose.model('SomeModel', TodoSchema );
 //long polling
-let Etag =0;
+let ETag =0;
 let waiting=[];
 
 function updatever(){
-    Etag++;
+    ETag++;
     let response = DbResponse();
     waiting.forEach(resolve => resolve(response));
     waiting=[]
@@ -149,10 +149,9 @@ function removeDB(record){
 //     .then(res =>console.log(res))
 //     .catch(err => console.log(err));
 
-function isRestURL(request){
+function isRestURL(requestUrl){
     let idfilter = /\/restapi\/?(\w+)?$/;
-    let result=idfilter.exec(request);
-    console.log('isRestURL', request)
+    let result=idfilter.exec(requestUrl);
     return result
 }
 
@@ -200,7 +199,6 @@ function waitForChanges(time) {
 
 createServer((request, response) => {
     //Router - checking whatever its a regular request or rest api
-    let version='veeersion';
     console.log('request.method',request.method)
     let handler = methods[request.method] || notAllowed;
         if (isRestURL(request.url)) {
@@ -216,8 +214,8 @@ createServer((request, response) => {
                 return {body: String(error), status: 500};
             })
             ///////{body, status = 200, type = "text/plain"} ---unpackingwith fallbacks  for object returned from handler
-            .then(({body, status = 200, type = "text/html", ETag='' }) => {
-                response.writeHead(status, {"Content-Type": type,"ETag": ETag});
+            .then(({body, status = 200, type = "text/html", ET = ETag }) => {
+                response.writeHead(status, {"Content-Type": type,"ETag":ET});
                 if (body && body.pipe) {
 
                     body.pipe(response)
@@ -244,29 +242,56 @@ async function DbResponse(request){
         resp = await getAllDB();
     }
     return {
-        status: 200, body: JSON.stringify(resp), ETag: Etag
+        status: 200, body: JSON.stringify(resp)
     }
 }
 //included long polling support
 //polling request must include
 RESTmethods.GET = async function (request) {
-    //get client version
-    let tag = /"(.*)"/.exec(request.headers["if-none-match"]);
-    //get client client's waiting time
-    let wait = /\bwait=(\d+)/.exec(request.headers["prefer"]);
+    //to be refactored
+    return new Promise( function(resolve,reject){
+        let responseString = "";
+        request.on("data", function (data) {
+            responseString += data;
+        });
+        request.on("end",  function () {
+    if(isRestURL(request.url)[1] == 'up') {
+        //get client version
+        console.log('------>',request.headers["if-none-match"]);
+        console.log('------>',request.headers["prefer"]);
 
-    //make db request and return fresh data in case of non conditional (regular) request or if
-    //version tag (request's "if-none-match" header) is not equal server's version (stored and returned as ETag)
-    if (!tag || tag[1] != Etag) {
-        return DbResponse(request);
+        let tag = /"(.*)"/.exec(request.headers["if-none-match"])
+        //get client client's waiting time
+        let wait = /\bwait=(\d+)/.exec(request.headers["prefer"]);
+        //console.log('request->>>>>',request);
+        console.log('tag',tag);
+        console.log('wait',wait);
+
+        // return response to allowing db update in case of
+        //version tag (request's "if-none-match" header) is not equal server's version (stored and returned as ETag)
+        if (!tag || tag[1] != ETag) {
+            console.log('issuing db update in case of version tag unequality tag-etag',tag[1],ETag);
+            return {
+                status: 200, body: 'server-side update issued', ETag: ETag
+            };
+        }
+        //in opposite case and without waiting flag returning 'not changed code'
+        else if (!wait) {
+            return {status: 304};
+        } else {
+            console.log('waiting response')
+            return waitForChanges(Number(wait[1]));
+
+        }
     }
-    //in opposite case and without waiting flag returning 'not changed code'
-    else if (!wait) {
-        return {status: 304};
-    } else {
-        return waitForChanges(Number(wait[1]));
+    else {
+        console.log('regular db update');
+        return DbResponse(request)
     }
-};
+
+})
+})};
+
 //in this implementation an updateDB is enoch smart
 //to decside if update or new item arrived
 
