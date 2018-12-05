@@ -257,6 +257,16 @@ RESTmethods.GET = async function (request) {
         request.on("end",  function () {
     if(isRestURL(request.url)[1] == 'up') {
         //get client version
+        console.log('------>',JSON.stringify(request.headers))
+        //request.method GET
+        //The problem is on client side - tag initially not arrived so headers are enpty
+
+        //$ curl -i -H "Prefer : 600" "http://localhost:5000/restapi/up"
+        // ------> {"host":"localhost:5000","user-agent":"curl/7.55.1","accept":"*/*","prefer ":"600"}
+        // ------> undefined
+        // ------> undefined
+        // tag null
+        // wait null
         console.log('------>',request.headers["if-none-match"]);
         console.log('------>',request.headers["prefer"]);
 

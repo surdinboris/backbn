@@ -48,11 +48,12 @@ var app = app || {};
                         else throw new Error(response.statusText);
                     });
                 }
-                let tag = undefined;
+                let tag = 1;
                 for (;;) {
                     let response;
                     try {
                         //
+                        //console.log(tag)
                         response = await fetchOK("/restapi/up", {
                             headers: tag && {"If-None-Match": tag,
                                 "Prefer": "wait=90"}
