@@ -188,7 +188,7 @@ function pipeStream(from, to) {
 //long polling support
 function waitForChanges(time) {
     return new Promise(resolve => {
-        waiting.push(resolve);
+        this.waiting.push(resolve);
         setTimeout(() => {
             if (!this.waiting.includes(resolve)) return;
             waiting = this.waiting.filter(r => r != resolve);
@@ -279,7 +279,7 @@ RESTmethods.GET = async function (request) {
                     '------>',JSON.stringify(request.headers));
                 resolve(DbResponse(request));
             }
-            let wait=9;
+            let wait=[0,9];
             if(isRestURL(request.url)[1] == 'up') {
                 console.log('\'dbresponse sent to request /up" \')\n' +
                     '------>',JSON.stringify(request.headers));
