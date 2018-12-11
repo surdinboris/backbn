@@ -228,6 +228,7 @@ createServer((request, response) => {
 }).listen(5000);
 
 async function DbResponse(request){
+    console.log('dbresponse activated')
     let id;
     let resp;
 
@@ -247,6 +248,23 @@ async function DbResponse(request){
 }
 //included long polling support
 //polling request must include
+
+// RESTmethods.GET = async function(request) {
+//
+//     let id= isRestURL(request.url)[1];
+//     console.log('RESTmethods.GET ', id || 'no id');
+//     let resp;
+//     if(id){
+//         resp = await getById(id);
+//     }
+//     else resp = await getAllDB();
+//
+//
+//     return {
+//         status: 200, body: JSON.stringify(resp), ETag: Etag
+//     }
+//
+// };
 RESTmethods.GET = async function (request) {
     //to be refactored
     return new Promise( function(resolve,reject){
@@ -255,9 +273,15 @@ RESTmethods.GET = async function (request) {
             responseString += data;
         });
         request.on("end",  function () {
-    if(isRestURL(request.url)[1] == 'up') {
+            if (!request.headers["if-none-match"]){
+                console.log('dbresponse sent to request without tag "if-none-match" ')
+                return DbResponse(request)
+            }
+
+            if(isRestURL(request.url)[1] == 'up') {
+
         //get client version
-        console.log('------>',JSON.stringify(request.headers))
+        //console.log('------>',JSON.stringify(request.headers));
         //request.method GET
         //The problem is on client side - tag initially not arrived so headers are enpty
 
@@ -294,6 +318,7 @@ RESTmethods.GET = async function (request) {
 
         }
     }
+    /////regular db responce
     else {
         console.log('regular db update');
         return DbResponse(request)
@@ -302,7 +327,7 @@ RESTmethods.GET = async function (request) {
 })
 })};
 
-//in this implementation an updateDB is enoch smart
+//in this implementation an updateDB is enough smart
 //to decside if update or new item arrived
 
 //create

@@ -20,24 +20,22 @@ var app = app || {};
             }
         },
 
-
-
         initialize: function () {
             this.$input = this.$('#new-todo');
             this.listenTo(app.Netc, 'add', this.addOne);
             this.listenTo(app.Netc, 'reset', this.addAll);
             //initialising - fetching data from server and starting to polling
 
-            this.startpolling(app.Netc.fetch({
-
-                success: function (collection, response, options) {
-
-                    //options.xhr.getAllResponseHeaders(); // To get all the headers
-                    // console.log('header ->>',options.xhr.getResponseHeader('ETag')); // To get just one needed header
-                    // console.log('headers ->>',options.xhr.getAllResponseHeaders()); // To get just one needed header
-
-                }
-            }))
+            // this.startpolling(app.Netc.fetch({
+            //
+            //     success: function (collection, response, options) {
+            //
+            //         //options.xhr.getAllResponseHeaders(); // To get all the headers
+            //         // console.log('header ->>',options.xhr.getResponseHeader('ETag')); // To get just one needed header
+            //         // console.log('headers ->>',options.xhr.getAllResponseHeaders()); // To get just one needed header
+            //
+            //     }
+            // }))
         },
 
         startpolling: async function () {
@@ -48,7 +46,7 @@ var app = app || {};
                         else throw new Error(response.statusText);
                     });
                 }
-                let tag = 1;
+                let tag = 0;
                 for (;;) {
                     let response;
                     try {
