@@ -273,9 +273,10 @@ RESTmethods.GET = async function (request) {
             responseString += data;
         });
         request.on("end",  function () {
+
             if (!request.headers["if-none-match"]){
                 console.log('dbresponse sent to request without tag "if-none-match" ')
-                return DbResponse(request)
+                resolve(DbResponse(request));
             }
 
             if(isRestURL(request.url)[1] == 'up') {
@@ -317,11 +318,6 @@ RESTmethods.GET = async function (request) {
             return waitForChanges(Number(wait[1]));
 
         }
-    }
-    /////regular db responce
-    else {
-        console.log('regular db update');
-        return DbResponse(request)
     }
 
 })

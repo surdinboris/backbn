@@ -24,8 +24,9 @@ var app = app || {};
             this.$input = this.$('#new-todo');
             this.listenTo(app.Netc, 'add', this.addOne);
             this.listenTo(app.Netc, 'reset', this.addAll);
+            app.Netc.fetch();
             //initialising - fetching data from server and starting to polling
-
+           // this.startpolling();
             // this.startpolling(app.Netc.fetch({
             //
             //     success: function (collection, response, options) {
