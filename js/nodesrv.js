@@ -279,7 +279,7 @@ RESTmethods.GET = async function (request) {
                     '------>',JSON.stringify(request.headers));
                 resolve(DbResponse(request));
             }
-
+            let wait=9;
             if(isRestURL(request.url)[1] == 'up') {
                 console.log('\'dbresponse sent to request /up" \')\n' +
                     '------>',JSON.stringify(request.headers));
@@ -313,13 +313,13 @@ RESTmethods.GET = async function (request) {
             };
         }
         //in opposite case and without waiting flag returning 'not changed code'
-        else if (!wait) {
+        if (!wait) {
             return {status: 304};
         }}
 
         else {
             console.log('waiting response')
-            return waitForChanges(Number(wait[1]));
+            resolve(waitForChanges(Number(wait[1])));
 
         }
 
