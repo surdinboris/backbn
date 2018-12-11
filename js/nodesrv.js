@@ -275,12 +275,14 @@ RESTmethods.GET = async function (request) {
         request.on("end",  function () {
 
             if (!request.headers["if-none-match"]){
-                console.log('dbresponse sent to request without tag "if-none-match" ')
+                console.log('\'dbresponse sent to request without tag "if-none-match" \')\n' +
+                    '------>',JSON.stringify(request.headers));
                 resolve(DbResponse(request));
             }
 
             if(isRestURL(request.url)[1] == 'up') {
-
+                console.log('\'dbresponse sent to request /up" \')\n' +
+                    '------>',JSON.stringify(request.headers));
         //get client version
         //console.log('------>',JSON.stringify(request.headers));
         //request.method GET
@@ -313,12 +315,14 @@ RESTmethods.GET = async function (request) {
         //in opposite case and without waiting flag returning 'not changed code'
         else if (!wait) {
             return {status: 304};
-        } else {
+        }}
+
+        else {
             console.log('waiting response')
             return waitForChanges(Number(wait[1]));
 
         }
-    }
+
 
 })
 })};
