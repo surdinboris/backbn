@@ -252,22 +252,22 @@ async function DbResponse(request) {
 //         type: "application/json", ETag: ETag
 // }
 }
-RESTmethods.GET = async function(request) {
-
-    let id= isRestURL(request.url)[1];
-    console.log('RESTmethods.GET ', id || 'no id');
-    let resp;
-    if(id){
-        resp = await getById(id);
-    }
-    else resp = await getAllDB();
-
-
-    return {
-        status: 200, body: JSON.stringify(resp), ETag: ETag
-    }
-
-};
+// RESTmethods.GET = async function(request) {
+//
+//     let id= isRestURL(request.url)[1];
+//     console.log('RESTmethods.GET ', id || 'no id');
+//     let resp;
+//     if(id){
+//         resp = await getById(id);
+//     }
+//     else resp = await getAllDB();
+//
+//
+//     return {
+//         status: 200, body: JSON.stringify(resp), ETag: ETag
+//     }
+//
+// };
 // RESTmethods.GET = async function (request) {
 //     return new Promise(function (resolve, reject) {
 //         let responseString = "";
