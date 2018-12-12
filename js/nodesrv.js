@@ -188,10 +188,12 @@ function pipeStream(from, to) {
 //long polling support
 function waitForChanges(time) {
     return new Promise(resolve => {
-        this.waiting.push(resolve);
+        waiting.push(resolve);
+        console.log('waiting updated>>>', waiting)
         setTimeout(() => {
-            if (!this.waiting.includes(resolve)) return;
-            waiting = this.waiting.filter(r => r != resolve);
+            if (!waiting.includes(resolve)) return;
+            waiting = waiting.filter(r => r != resolve);
+
             resolve({status: 304});
         }, time * 1000);
     });
