@@ -220,7 +220,6 @@ createServer((request, response) => {
             ///////{body, status = 200, type = "text/plain"} ---unpackingwith fallbacks  for object returned from handler
             .then(({ status = 200, body, type = "text/html", ETag =0 }) => {
                 response.writeHead(status, {"Content-Type": type,"ETag":ETag});
-                console.log('body>>>>>>',body)
 
                 if (body && body.pipe) {
 
@@ -234,7 +233,7 @@ createServer((request, response) => {
 }).listen(5000);
 
 async function DbResponse(request) {
-    console.log('dbresponse activated');
+    console.log('dbresponse activated',request.url);
     let id;
     let resp;
 
@@ -248,6 +247,7 @@ async function DbResponse(request) {
     else {
         resp = await getAllDB();
     }
+    console.log('dbresp', resp)
     return resp
 //         status: 200,body: JSON.stringify(resp),
 //         type: "application/json", ETag: ETag
@@ -316,11 +316,12 @@ RESTmethods.GET = async function (request) {
 
             else{
                 let resp = await DbResponse(request);
-                console.log(resp)
-            return resp
+            return {status: 200, body: JSON.stringify(resp), ETag: ETag }
         }
     })
 })};
+
+
 
 //in this implementation an updateDB is enough smart
 //to decside if update or new item arrived
