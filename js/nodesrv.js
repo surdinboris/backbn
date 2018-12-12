@@ -71,7 +71,7 @@ function getById(_id) {
                 reject(err);
                 return
             }
-            if (res.length>1){
+            if (res.length > 1){
                 reject(`there is more than one document found with similar id found \n,${res}`);
                 return
             }
@@ -141,7 +141,6 @@ function removeDB(record){
             resolve(result)
     })
 })
-
 }
 
 //removeDB({title: 'data from node server four 23'})
@@ -253,73 +252,77 @@ async function DbResponse(request) {
 //         type: "application/json", ETag: ETag
 // }
 }
-// RESTmethods.GET = async function(request) {
+RESTmethods.GET = async function(request) {
+
+    let id= isRestURL(request.url)[1];
+    console.log('RESTmethods.GET ', id || 'no id');
+    let resp;
+    if(id){
+        resp = await getById(id);
+    }
+    else resp = await getAllDB();
+
+
+    return {
+        status: 200, body: JSON.stringify(resp), ETag: ETag
+    }
+
+};
+// RESTmethods.GET = async function (request) {
+//     return new Promise(function (resolve, reject) {
+//         let responseString = "";
+//         request.on("data", function (data) {
+//             responseString += data;
+//         });
+//         request.on("end", async function () {
+//             //in case if polling "update" request
+//             if (isRestURL(request.url)[1] == 'up') {
+//                 console.log('\'dbresponse sent to request /up" \')\n' +
+//                     '------>', JSON.stringify(request.headers));
 //
-//     let id= isRestURL(request.url)[1];
-//     console.log('RESTmethods.GET ', id || 'no id');
-//     let resp;
-//     if(id){
-//         resp = await getById(id);
-//     }
-//     else resp = await getAllDB();
+//                 console.log('------>', JSON.stringify(request.headers)["if-none-match"]);
+//                 console.log('------>', JSON.stringify(request.headers)["prefer"]);
+//
+//                 let tag = /"(.*)"/.exec(request.headers["if-none-match"])
+//                 //get client client's waiting time
+//                 let wait = /\bwait=(\d+)/.exec(request.headers["prefer"]);
+//                 //console.log('request->>>>>',request);
+//                 console.log('tag', tag);
+//                 console.log('wait', wait);
+//
+//                 // return response to allowing db update in case of
+//                 //version tag (request's "if-none-match" header) is not equal server's version (stored and returned as ETag)
+//                 if (!tag || tag[1] != ETag) {
+//                     console.log('issuing db update in case of version tag unequality tag-etag', tag[1], ETag);
+//                     return {
+//                         status: 200, body: 'server-side update issued', ETag: ETag
+//                     };
+//                 }
 //
 //
-//     return {
-//         status: 200, body: JSON.stringify(resp), ETag: Etag
-//     }
+//                 //in opposite case and without waiting flag returning 'not changed code'
+//                 if (!wait) {
+//                     return {status: 304};
+//                 }
+//                 else {
 //
-// };
-RESTmethods.GET = async function (request) {
-    return new Promise(function (resolve, reject) {
-        let responseString = "";
-        request.on("data", function (data) {
-            responseString += data;
-        });
-        request.on("end", async function () {
-            //in case if polling "update" request
-            if (isRestURL(request.url)[1] == 'up') {
-                console.log('\'dbresponse sent to request /up" \')\n' +
-                    '------>', JSON.stringify(request.headers));
-
-                console.log('------>', JSON.stringify(request.headers)["if-none-match"]);
-                console.log('------>', JSON.stringify(request.headers)["prefer"]);
-
-                let tag = /"(.*)"/.exec(request.headers["if-none-match"])
-                //get client client's waiting time
-                let wait = /\bwait=(\d+)/.exec(request.headers["prefer"]);
-                //console.log('request->>>>>',request);
-                console.log('tag', tag);
-                console.log('wait', wait);
-
-                // return response to allowing db update in case of
-                //version tag (request's "if-none-match" header) is not equal server's version (stored and returned as ETag)
-                if (!tag || tag[1] != ETag) {
-                    console.log('issuing db update in case of version tag unequality tag-etag', tag[1], ETag);
-                    return {
-                        status: 200, body: 'server-side update issued', ETag: ETag
-                    };
-                }
-
-
-                //in opposite case and without waiting flag returning 'not changed code'
-                if (!wait) {
-                    return {status: 304};
-                }
-                else {
-
-                    console.log('waiting response')
-                    resolve(waitForChanges(Number(wait[1])));
-
-                }
-            }
-            /////in case of non polling request
-
-            else{
-                let resp = await DbResponse(request);
-            return {status: 200, body: JSON.stringify(resp), ETag: ETag }
-        }
-    })
-})};
+//                     console.log('waiting response')
+//                     resolve(waitForChanges(Number(wait[1])));
+//
+//                 }
+//             }
+//             /////in case of non polling request
+//
+//             else{
+//                 let resp = await DbResponse(request);
+//
+//                 return {
+//                     status: 200, body: JSON.stringify(resp), ETag: ETag
+//                 }
+//
+//         }
+//     })
+// })};
 
 
 
