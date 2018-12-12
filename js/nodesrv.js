@@ -28,13 +28,13 @@ let TodoSchema = new Schema({
 });
 let TodoModel=  mongoose.model('SomeModel', TodoSchema );
 //long polling
-let ETag =0;
+let ETag = 0;
 let waiting=[];
 
 function updatever(){
     ETag++;
-    let response = DbResponse();
-    waiting.forEach(resolve => resolve(response));
+    console.log('etag was updated', ETag);
+    waiting.forEach(resolve => resolve());
     waiting=[]
 }
 //testing
@@ -151,8 +151,7 @@ function removeDB(record){
 
 function isRestURL(requestUrl){
     let idfilter = /\/restapi\/?(\w+)?$/;
-    let result=idfilter.exec(requestUrl);
-    return result
+    return idfilter.exec(requestUrl)
 }
 
 
@@ -191,7 +190,10 @@ function waitForChanges(time) {
         waiting.push(resolve);
         console.log('waiting updated>>>', waiting)
         setTimeout(() => {
-            if (!waiting.includes(resolve)) return;
+            if (!waiting.includes(resolve)){
+             console.log('waiting not includes')
+                return
+            }
             waiting = waiting.filter(r => r != resolve);
 
             resolve({status: 304});
@@ -213,11 +215,13 @@ createServer((request, response) => {
         handler(request)
             .catch(error => {
                 if (error.status != null) return error;
-                return {body: String(error), status: 500};
+                return {status: 500,body: String(error)};
             })
             ///////{body, status = 200, type = "text/plain"} ---unpackingwith fallbacks  for object returned from handler
-            .then(({body, status = 200, type = "text/html", ET = ETag }) => {
-                response.writeHead(status, {"Content-Type": type,"ETag":ET});
+            .then(({ status = 200, body, type = "text/html", ETag =0 }) => {
+                response.writeHead(status, {"Content-Type": type,"ETag":ETag});
+                console.log('body>>>>>>',body)
+
                 if (body && body.pipe) {
 
                     body.pipe(response)
@@ -229,14 +233,14 @@ createServer((request, response) => {
 
 }).listen(5000);
 
-async function DbResponse(request){
-    console.log('dbresponse activated')
+async function DbResponse(request) {
+    console.log('dbresponse activated');
     let id;
     let resp;
 
-    if(request){
+    if (request) {
         id = isRestURL(request.url)[1];
-    };
+    }
 
     if (id) {
         resp = await getById(id);
@@ -244,13 +248,11 @@ async function DbResponse(request){
     else {
         resp = await getAllDB();
     }
-    return {
-        status: 200, body: JSON.stringify(resp)
-    }
+    return resp
+//         status: 200,body: JSON.stringify(resp),
+//         type: "application/json", ETag: ETag
+// }
 }
-//included long polling support
-//polling request must include
-
 // RESTmethods.GET = async function(request) {
 //
 //     let id= isRestURL(request.url)[1];
@@ -268,65 +270,56 @@ async function DbResponse(request){
 //
 // };
 RESTmethods.GET = async function (request) {
-    //to be refactored
-    return new Promise( function(resolve,reject){
+    return new Promise(function (resolve, reject) {
         let responseString = "";
         request.on("data", function (data) {
             responseString += data;
         });
-        request.on("end",  function () {
-
-            if (!request.headers["if-none-match"]){
-                console.log('\'dbresponse sent to request without tag "if-none-match" \')\n' +
-                    '------>',JSON.stringify(request.headers));
-                resolve(DbResponse(request));
-            }
-            let wait=[0,9];
-            if(isRestURL(request.url)[1] == 'up') {
+        request.on("end", async function () {
+            //in case if polling "update" request
+            if (isRestURL(request.url)[1] == 'up') {
                 console.log('\'dbresponse sent to request /up" \')\n' +
-                    '------>',JSON.stringify(request.headers));
-        //get client version
-        //console.log('------>',JSON.stringify(request.headers));
-        //request.method GET
-        //The problem is on client side - tag initially not arrived so headers are enpty
+                    '------>', JSON.stringify(request.headers));
 
-        //$ curl -i -H "Prefer : 600" "http://localhost:5000/restapi/up"
-        // ------> {"host":"localhost:5000","user-agent":"curl/7.55.1","accept":"*/*","prefer ":"600"}
-        // ------> undefined
-        // ------> undefined
-        // tag null
-        // wait null
-        console.log('------>',request.headers["if-none-match"]);
-        console.log('------>',request.headers["prefer"]);
+                console.log('------>', JSON.stringify(request.headers)["if-none-match"]);
+                console.log('------>', JSON.stringify(request.headers)["prefer"]);
 
-        let tag = /"(.*)"/.exec(request.headers["if-none-match"])
-        //get client client's waiting time
-        let wait = /\bwait=(\d+)/.exec(request.headers["prefer"]);
-        //console.log('request->>>>>',request);
-        console.log('tag',tag);
-        console.log('wait',wait);
+                let tag = /"(.*)"/.exec(request.headers["if-none-match"])
+                //get client client's waiting time
+                let wait = /\bwait=(\d+)/.exec(request.headers["prefer"]);
+                //console.log('request->>>>>',request);
+                console.log('tag', tag);
+                console.log('wait', wait);
 
-        // return response to allowing db update in case of
-        //version tag (request's "if-none-match" header) is not equal server's version (stored and returned as ETag)
-        if (!tag || tag[1] != ETag) {
-            console.log('issuing db update in case of version tag unequality tag-etag',tag[1],ETag);
-            return {
-                status: 200, body: 'server-side update issued', ETag: ETag
-            };
+                // return response to allowing db update in case of
+                //version tag (request's "if-none-match" header) is not equal server's version (stored and returned as ETag)
+                if (!tag || tag[1] != ETag) {
+                    console.log('issuing db update in case of version tag unequality tag-etag', tag[1], ETag);
+                    return {
+                        status: 200, body: 'server-side update issued', ETag: ETag
+                    };
+                }
+
+
+                //in opposite case and without waiting flag returning 'not changed code'
+                if (!wait) {
+                    return {status: 304};
+                }
+                else {
+
+                    console.log('waiting response')
+                    resolve(waitForChanges(Number(wait[1])));
+
+                }
+            }
+            /////in case of non polling request
+
+            else{
+                let resp = await DbResponse(request);
+                console.log(resp)
+            return resp
         }
-        //in opposite case and without waiting flag returning 'not changed code'
-        if (!wait) {
-            return {status: 304};
-        }}
-
-        else {
-            console.log('waiting response')
-            resolve(waitForChanges(Number(wait[1])));
-
-        }
-
-
-})
+    })
 })};
 
 //in this implementation an updateDB is enough smart

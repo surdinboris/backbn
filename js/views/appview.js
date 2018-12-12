@@ -24,37 +24,36 @@ var app = app || {};
             this.$input = this.$('#new-todo');
             this.listenTo(app.Netc, 'add', this.addOne);
             this.listenTo(app.Netc, 'reset', this.addAll);
-            app.Netc.fetch();
+            //app.Netc.fetch();
             //initialising - fetching data from server and starting to polling
-           // this.startpolling();
-            // this.startpolling(app.Netc.fetch({
-            //
-            //     success: function (collection, response, options) {
-            //
-            //         //options.xhr.getAllResponseHeaders(); // To get all the headers
-            //         // console.log('header ->>',options.xhr.getResponseHeader('ETag')); // To get just one needed header
-            //         // console.log('headers ->>',options.xhr.getAllResponseHeaders()); // To get just one needed header
-            //
-            //     }
-            // }))
-        },
+            //this.startpolling();
+            app.Netc.fetch({
+
+                success: function (collection, response, options) {
+
+                    //options.xhr.getAllResponseHeaders(); // To get all the headers
+                  app.ETag= options.xhr.getResponseHeader('ETag'); // To get just one needed header
+                    console.log('tag initially fetched >>',app.ETag)
+                    // console.log('headers ->>',options.xhr.getAllResponseHeaders()); // To get just one needed heade
+                }
+        })},
 
         startpolling: async function () {
                //fetchOK handler
                 function fetchOK(url, options) {
                     return fetch(url, options).then(response => {
                         if (response.status < 400) return response;
-                        else throw new Error(response.statusText);
+                        else throw new Error('fetch OK error',response.statusText);
                     });
                 }
-                let tag = 0;
+
                 for (;;) {
                     let response;
                     try {
                         //
                         //console.log(tag)
                         response = await fetchOK("/restapi/up", {
-                            headers: tag && {"If-None-Match": tag,
+                            headers: this.tag && {"If-None-Match": app.ETag,
                                 "Prefer": "wait=90"}
                         });
                     } catch (e) {
@@ -64,7 +63,7 @@ var app = app || {};
                     }
                     console.log(response);
                     if (response.status == 304) continue;
-                    tag = response.headers.get("ETag");
+                    app.ETag = response.headers.get("ETag");
                     app.Netc.fetch();
                 }
             },
