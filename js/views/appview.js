@@ -47,24 +47,25 @@ var app = app || {};
                         else throw new Error('fetch OK error',response.statusText);
                     });
                 };
-
+                let ETag = undefined;
                 for (;;) {
                     let response;
                     try {
-                        //sending tag
+                        //consolsending tag
                         response = await this.fetchOK("/restapi/up", {
-                            headers: app.ETag && {"If-None-Match": app.ETag,
+                            headers: ETag && {"if-none-match": ETag,
                                 "Prefer": "wait=90"}
                         });
-                        console.log('RESPONSE',response.headers.get("ETag") );
+                        console.log(response.status)
+
                     } catch (e) {
                         console.log("Request failed: " + e);
                         await new Promise(resolve => setTimeout(resolve, 500));
                         continue;
                     }
-                    console.log(response);
                     if (response.status == 304) continue;
-                    app.ETag = response.headers.get("ETag");
+                    //console.log('RESPONSE',response.headers.get("ETag") );
+                    ETag = response.headers.get("ETag");
                     app.Netc.fetch();
                 }
             },

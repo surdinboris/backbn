@@ -274,10 +274,25 @@ RESTmethods.GET = async function (request) {
         }
     }
     else {
-        console.log('if-none-match', JSON.stringify(request.headers)["if-none-match"])
-        console.log('Returning ETag to initiate or not client-side update (to regular url');
+
+        let tag = /"(.*)"/.exec(request.headers["if-none-match"]);
+        let wait = /\bwait=(\d+)/.exec(request.headers["prefer"]);
+
+        console.log('if-none-match', request.headers["if-none-match"])
+
+        console.log('wait', wait);
+        if(tag != ETag) {
+            console.log('Returning ETag to initiate or not client-side update (to regular url');
+            //blah-blah-blah business logic for waiting + different
+            // responses according client configuration
+            return {
+                status: 304, ETag: ETag
+            }
+
+        else{
+
         return {
-            status: 200, ETag: ETag
+            status: 304, ETag: ETag
         }
     }
 };
