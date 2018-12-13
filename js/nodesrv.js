@@ -5,7 +5,7 @@ const RESTmethods = Object.create(null);
 const {parse} = require("url");
 const {resolve, sep} = require("path");
 const baseDirectory = process.cwd();
-const {rmdir,mkdir, unlink} = require("fs").promises;
+const {rmdir, mkdir, unlink} = require("fs").promises;
 const {createWriteStream} = require("fs");
 const {createReadStream} = require("fs");
 const {stat, readdir} = require("fs").promises;
@@ -14,7 +14,7 @@ const mongoose = require('mongoose');
 
 ////DB - to be wrapped in  module with CRUD interface
 
-let mongoDB= 'mongodb://127.0.0.1:27017/todos';
+let mongoDB = 'mongodb://127.0.0.1:27017/todos';
 mongoose.connect(mongoDB);
 mongoose.Promise = global.Promise;
 let db = mongoose.connection;
@@ -24,19 +24,20 @@ let TodoSchema = new Schema({
     title: '',
     meta: 0,
     completed: false,
-    todoDate:0
+    todoDate: 0
 });
-let TodoModel=  mongoose.model('SomeModel', TodoSchema );
+let TodoModel = mongoose.model('SomeModel', TodoSchema);
 //long polling
 let ETag = 0;
-let waiting=[];
+let waiting = [];
 
-function updatever(){
+function updatever() {
     ETag++;
     console.log('etag was updated', ETag);
     waiting.forEach(resolve => resolve());
-    waiting=[]
+    waiting = []
 }
+
 //testing
 (function populateDB() {
     for (let i = 1; i < 52; i++) {
@@ -44,22 +45,23 @@ function updatever(){
 
             title: `data from node server four ${i}`,
             meta: 800,
-            completed: i % 2==0,
+            completed: i % 2 == 0,
             todoDate: 0
-        },false).then(res => console.log(res._id)).catch(err=>console.log('failed to get added id\'s due to adding errors',err))
+        }, false).then(res => console.log(res._id)).catch(err => console.log('failed to get added id\'s due to adding errors', err))
 
     }
 });
 
 //get all records
 
-function getAllDB(){
+function getAllDB() {
     return new Promise(function (resolve, reject) {
         TodoModel.find({}, function (err, res) {
             resolve(res)
         })
     })
 }
+
 //testing
 //getAllDB().then(console.log)
 
@@ -71,11 +73,11 @@ function getById(_id) {
                 reject(err);
                 return
             }
-            if (res.length > 1){
+            if (res.length > 1) {
                 reject(`there is more than one document found with similar id found \n,${res}`);
                 return
             }
-            if (res.length == 0){
+            if (res.length == 0) {
                 resolve(false)
             }
             resolve(res[0])
@@ -83,43 +85,44 @@ function getById(_id) {
     })
 
 }
+
 // testing
 //getDB(3).then(console.log)
 
 //adding\updating with validation
-function addDB(record, update){
+function addDB(record, update) {
     //maybe add some validation of arrived data record?
-    return new Promise(function (resolve,reject) {
+    return new Promise(function (resolve, reject) {
         //retrieving dbrecord  from the database if presented
         getById(record._id).catch(err => console.log('new record\'s id failed to be verified in database before saving with following error (escalated): \n', err))
             .then(function (dbrecord) {
-            let newrec = new TodoModel(record);
-            //not suitable case - avoid to updates for not presented record
+                let newrec = new TodoModel(record);
+                //not suitable case - avoid to updates for not presented record
 
-            if(!dbrecord && update){
-                reject(' error: updates for not presented record not allowed')
-                return
-            }
-            //in case of id was found but update not allowed(adding new record case)
-            if (dbrecord && !update){
-                console.log('dbrecord',dbrecord);
-                reject('trying to add record with id that persists in database')
-                return
-            }
-            //in case of updating new record - replacing content of persisted data
-            if (dbrecord && update) {
-                newrec = dbrecord.set(record)
-            }
-            //in case of id not found in db - just creation of new record
-
-            newrec.save(function (savingerr, record) {
-                if (savingerr) {
-                    reject(savingerr)
+                if (!dbrecord && update) {
+                    reject(' error: updates for not presented record not allowed')
+                    return
                 }
-                updatever();
-                resolve(record)
+                //in case of id was found but update not allowed(adding new record case)
+                if (dbrecord && !update) {
+                    console.log('dbrecord', dbrecord);
+                    reject('trying to add record with id that persists in database')
+                    return
+                }
+                //in case of updating new record - replacing content of persisted data
+                if (dbrecord && update) {
+                    newrec = dbrecord.set(record)
+                }
+                //in case of id not found in db - just creation of new record
+
+                newrec.save(function (savingerr, record) {
+                    if (savingerr) {
+                        reject(savingerr)
+                    }
+                    updatever();
+                    resolve(record)
+                })
             })
-        })
     }).catch(err => console.log('addDB error: \n', err))
 }
 
@@ -127,20 +130,20 @@ function addDB(record, update){
 // getById(23).then(res => {console.log('promised',res)
 // }).catch(err => console.log(err));
 //remove
-function removeDB(record){
-    return new Promise(function(resolve, reject){
+function removeDB(record) {
+    return new Promise(function (resolve, reject) {
         TodoModel.deleteOne(record, function (err, result) {
-            if(err){
-                reject('DB error occured',err);
+            if (err) {
+                reject('DB error occured', err);
                 return
             }
-            if(result.n == 0){
+            if (result.n == 0) {
                 reject('no records were deleted');
                 return
             }
             resolve(result)
+        })
     })
-})
 }
 
 //removeDB({title: 'data from node server four 23'})
@@ -148,7 +151,7 @@ function removeDB(record){
 //     .then(res =>console.log(res))
 //     .catch(err => console.log(err));
 
-function isRestURL(requestUrl){
+function isRestURL(requestUrl) {
     let idfilter = /\/restapi\/?(\w+)?$/;
     return idfilter.exec(requestUrl)
 }
@@ -183,14 +186,15 @@ function pipeStream(from, to) {
         from.pipe(to);
     });
 }
+
 //long polling support
 function waitForChanges(time) {
     return new Promise(resolve => {
         waiting.push(resolve);
         console.log('waiting updated>>>', waiting)
         setTimeout(() => {
-            if (!waiting.includes(resolve)){
-             console.log('waiting not includes')
+            if (!waiting.includes(resolve)) {
+                console.log('waiting not includes')
                 return
             }
             waiting = waiting.filter(r => r != resolve);
@@ -202,37 +206,37 @@ function waitForChanges(time) {
 
 createServer((request, response) => {
     //Router - checking whatever its a regular request or rest api
-    console.log('request.method',request.method)
+    console.log('request.method', request.method)
     let handler = methods[request.method] || notAllowed;
-        if (isRestURL(request.url)) {
+    if (isRestURL(request.url)) {
         handler = RESTmethods[request.method] || notAllowed;
     }
 
 
     //handle request with appropriate method
     // else {
-        handler(request)
-            .catch(error => {
-                if (error.status != null) return error;
-                return {status: 500,body: String(error)};
-            })
-            ///////{body, status = 200, type = "text/plain"} ---unpackingwith fallbacks  for object returned from handler
-            .then(({ status = 200, body, type = "text/html", ETag =0 }) => {
-                response.writeHead(status, {"Content-Type": type,"ETag":ETag});
+    handler(request)
+        .catch(error => {
+            if (error.status != null) return error;
+            return {status: 500, body: String(error)};
+        })
+        ///////{body, status = 200, type = "text/plain"} ---unpackingwith fallbacks  for object returned from handler
+        .then(({status = 200, body, type = "text/html", ETag = 0}) => {
+            response.writeHead(status, {"Content-Type": type, "ETag": ETag});
 
-                if (body && body.pipe) {
+            if (body && body.pipe) {
 
-                    body.pipe(response)
-                }
-                else response.end(body);
-            });
-  //  }
+                body.pipe(response)
+            }
+            else response.end(body);
+        });
+    //  }
 
 
 }).listen(5000);
 
 async function DbResponse(request) {
-    console.log('dbresponse activated',request.url);
+    console.log('dbresponse activated', request.url);
     let id;
     let resp;
 
@@ -252,22 +256,32 @@ async function DbResponse(request) {
 //         type: "application/json", ETag: ETag
 // }
 }
-// RESTmethods.GET = async function(request) {
-//
-//     let id= isRestURL(request.url)[1];
-//     console.log('RESTmethods.GET ', id || 'no id');
-//     let resp;
-//     if(id){
-//         resp = await getById(id);
-//     }
-//     else resp = await getAllDB();
-//
-//
-//     return {
-//         status: 200, body: JSON.stringify(resp), ETag: ETag
-//     }
-//
-// };
+
+RESTmethods.GET = async function (request) {
+
+    let id = isRestURL(request.url)[1];
+    console.log('RESTmethods.GET >> ', id || 'no id');
+    //in case of rest request
+    if (id != 'up') {
+        let resp;
+        if (id) {
+            resp = await getById(id);
+        }
+        else resp = await getAllDB();
+
+        return {
+            status: 200, body: JSON.stringify(resp), ETag: ETag
+        }
+    }
+    else {
+        console.log('if-none-match', JSON.stringify(request.headers)["if-none-match"])
+        console.log('Returning ETag to initiate or not client-side update (to regular url');
+        return {
+            status: 200, ETag: ETag
+        }
+    }
+};
+
 // RESTmethods.GET = async function (request) {
 //     return new Promise(function (resolve, reject) {
 //         let responseString = "";
@@ -323,38 +337,38 @@ async function DbResponse(request) {
 //         }
 //     })
 // })};
-
+//
 
 
 //in this implementation an updateDB is enough smart
 //to decside if update or new item arrived
 
 //create
-RESTmethods.POST = function(request) {
-    return new Promise( function(resolve,reject){
+RESTmethods.POST = function (request) {
+    return new Promise(function (resolve, reject) {
         let responseString = "";
         request.on("data", function (data) {
             responseString += data;
         });
-        request.on("end",  function () {
-            console.log('RESTmethods.POST new',JSON.parse(responseString));
-            addDB(JSON.parse(responseString), false).then(newRec=>{
+        request.on("end", function () {
+            console.log('RESTmethods.POST new', JSON.parse(responseString));
+            addDB(JSON.parse(responseString), false).then(newRec => {
                 resolve({
                     status: 200, body: JSON.stringify(newRec)
-            });
+                });
             })
+        })
     })
-})
 };
-RESTmethods.PUT = function(request) {
-    return new Promise( function(resolve,reject){
+RESTmethods.PUT = function (request) {
+    return new Promise(function (resolve, reject) {
         let responseString = "";
         request.on("data", function (data) {
             responseString += data;
         });
-        request.on("end",  function () {
-            console.log('RESTmethods.PUT update',JSON.parse(responseString));
-            addDB(JSON.parse(responseString), true).then(newRec=>{
+        request.on("end", function () {
+            console.log('RESTmethods.PUT update', JSON.parse(responseString));
+            addDB(JSON.parse(responseString), true).then(newRec => {
                 resolve({
                     status: 200, body: JSON.stringify(newRec)
                 });
@@ -364,16 +378,16 @@ RESTmethods.PUT = function(request) {
 };
 
 //deleting data from db based on /restapi/id request
-RESTmethods.DELETE = function(request) {
-    let requestId={_id:isRestURL(request.url)[1]};
+RESTmethods.DELETE = function (request) {
+    let requestId = {_id: isRestURL(request.url)[1]};
     console.log('RESTmethods.DELETE delete', requestId);
-    return new Promise( function(resolve,reject){
+    return new Promise(function (resolve, reject) {
         let responseString = "";
         request.on("data", function (data) {
             responseString += data;
         });
-        request.on("end",  function () {
-           removeDB(requestId, false).then(newRec=>{
+        request.on("end", function () {
+            removeDB(requestId, false).then(newRec => {
                 resolve({
                     status: 200, body: "ok"
                 });
@@ -383,7 +397,7 @@ RESTmethods.DELETE = function(request) {
 };
 
 ///GET handler
-methods.GET = async function(request) {
+methods.GET = async function (request) {
     let path = toFSpath(request.url);
     //console.log('toFSpath',request.url,toFSpath(request.url))
     let stats;
@@ -399,20 +413,21 @@ methods.GET = async function(request) {
         //fullpath to enter to  subsub levels
         let urllist = (await readdir(path)).map((c) => {
             //patch - avoid unnecessary '/' addidtions
-            if(request.url == "/"){
+            if (request.url == "/") {
                 return `<a href=${c}>${c}</a><br>`
             }
-            return `<a href=${request.url+"/"+c}>${c}</a><br>`
+            return `<a href=${request.url + "/" + c}>${c}</a><br>`
         });
 
         return {body: urllist.join("\n")}
     }
     else {
-        return {body: createReadStream(path),
-            type: mime.getType(path)};
+        return {
+            body: createReadStream(path),
+            type: mime.getType(path)
+        };
     }
 };
-
 
 
 //fake DB

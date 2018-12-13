@@ -31,31 +31,32 @@ var app = app || {};
 
                 success: function (collection, response, options) {
 
-                    //options.xhr.getAllResponseHeaders(); // To get all the headers
-                  app.ETag= options.xhr.getResponseHeader('ETag'); // To get just one needed header
-                    console.log('tag initially fetched >>',app.ETag)
+                     //options.xhr.getAllResponseHeaders(); // To get all the headers
+                     app.ETag= options.xhr.getResponseHeader('ETag'); // To get just one needed header
+                     console.log('tag initially fetched >>',app.ETag);
                     // console.log('headers ->>',options.xhr.getAllResponseHeaders()); // To get just one needed heade
                 }
-        })},
+        }).then(this.startpolling())},
 
         startpolling: async function () {
+            console.log('startpolling started with ETag', app.ETag),
                //fetchOK handler
-                function fetchOK(url, options) {
+               this.fetchOK = function (url, options) {
                     return fetch(url, options).then(response => {
                         if (response.status < 400) return response;
                         else throw new Error('fetch OK error',response.statusText);
                     });
-                }
+                };
 
                 for (;;) {
                     let response;
                     try {
-                        //
-                        //console.log(tag)
-                        response = await fetchOK("/restapi/up", {
-                            headers: this.tag && {"If-None-Match": app.ETag,
+                        //sending tag
+                        response = await this.fetchOK("/restapi/up", {
+                            headers: app.ETag && {"If-None-Match": app.ETag,
                                 "Prefer": "wait=90"}
                         });
+                        console.log('RESPONSE',response.headers.get("ETag") );
                     } catch (e) {
                         console.log("Request failed: " + e);
                         await new Promise(resolve => setTimeout(resolve, 500));
