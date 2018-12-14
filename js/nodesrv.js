@@ -28,13 +28,13 @@ let TodoSchema = new Schema({
 });
 let TodoModel = mongoose.model('SomeModel', TodoSchema);
 //long polling
-let ETag = 0;
+let ETag = 1;
 let waiting = [];
 
 function updatever() {
     ETag++;
     console.log('etag was updated', ETag);
-    waiting.forEach(resolve => resolve());
+    //waiting.forEach(resolve => resolve());
     waiting = []
 }
 
@@ -197,8 +197,11 @@ function waitForChanges(time) {
                 console.log('waiting not includes')
                 return
             }
+            //in case of waiting includes passed in resolve
+            //that means that it already waited enough so
+            // clearing from this resolve from waiting
             waiting = waiting.filter(r => r != resolve);
-
+            //and resolving it
             resolve({status: 304});
         }, time * 1000);
     });
@@ -275,24 +278,30 @@ RESTmethods.GET = async function (request) {
     }
     else {
 
-        let tag = /"(.*)"/.exec(request.headers["if-none-match"]);
+        let tag = /(.*)/.exec(request.headers["if-none-match"]);
         let wait = /\bwait=(\d+)/.exec(request.headers["prefer"]);
 
         console.log('if-none-match', request.headers["if-none-match"])
 
-        console.log('wait', wait);
+        console.log('wait', wait, "tag", tag);
         if(tag != ETag) {
             console.log('Returning ETag to initiate or not client-side update (to regular url');
+
             //blah-blah-blah business logic for waiting + different
             // responses according client configuration
+
+            return {
+                status: 200, ETag: ETag
+            }
+        }
+
+        else if(!wait) {
             return {
                 status: 304, ETag: ETag
             }
-
-        else{
-
-        return {
-            status: 304, ETag: ETag
+        }
+        else {
+            return waitForChanges(Number(wait[1]))
         }
     }
 };

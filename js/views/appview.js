@@ -54,7 +54,7 @@ var app = app || {};
                         //consolsending tag
                         response = await this.fetchOK("/restapi/up", {
                             headers: ETag && {"if-none-match": ETag,
-                                "Prefer": "wait=90"}
+                                "prefer": "wait=90"}
                         });
                         console.log(response.status)
 
