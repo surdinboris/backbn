@@ -34,7 +34,7 @@ let waiting = [];
 function updatever() {
     ETag++;
     console.log('etag was updated', ETag);
-    //waiting.forEach(resolve => resolve());
+    waiting.forEach(resolve => resolve(getAllDB()));
     waiting = []
 }
 
@@ -266,6 +266,7 @@ RESTmethods.GET = async function (request) {
     console.log('RESTmethods.GET >> ', id || 'no id');
     //in case of rest request
     if (id != 'up') {
+        console.log('id != up')
         let resp;
         if (id) {
             resp = await getById(id);
@@ -277,14 +278,14 @@ RESTmethods.GET = async function (request) {
         }
     }
     else {
-
+        console.log('id == up')
         let tag = /(.*)/.exec(request.headers["if-none-match"]);
         let wait = /\bwait=(\d+)/.exec(request.headers["prefer"]);
 
         console.log('if-none-match', request.headers["if-none-match"])
 
         console.log('wait', wait, "tag", tag);
-        if(tag != ETag) {
+        if( !tag || tag[1] != ETag) {
             console.log('Returning ETag to initiate or not client-side update (to regular url');
 
             //blah-blah-blah business logic for waiting + different
@@ -301,6 +302,7 @@ RESTmethods.GET = async function (request) {
             }
         }
         else {
+            console.log('returning waitForChanges')
             return waitForChanges(Number(wait[1]))
         }
     }
