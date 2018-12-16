@@ -17,10 +17,10 @@ h1 {
 }
 
 header {
-    min-width:400px;
+    height: 30%;
+    width: 80%;
     background-color: #F1F1F1;
     text-align: center;
-    padding: 20px;
     border-radius: 5px;
 }
 
@@ -34,11 +34,18 @@ footer
     padding: 50px;
 }
 
-div{
+
+div {
     display: block;
     width: 500px;
-    margin: auto;
+    margin: 10px;
     text-align: left;
+}
+.container{
+    background: #b4a980;
+    position: relative;
+    height: 100%;
+    border-radius: 5px;
 
 }
 label{
@@ -53,17 +60,29 @@ label{
 
 
 article {
-    min-width:400px;
+    width: 80%;
+    height: 100%;
     background-color: #f1d1ba;
-    padding: 60px;
+    padding: 40px;
     border-radius: 5px;
-
 
 }
 
+aside{
+    position: absolute;
+    border-radius: 5px;
+    right: 0;
+    bottom: 0;
+    height: 100%;
+    width: 20%;
+    background: aquamarine;
+    padding: 40px;
+
+}
 section {
+
     width: calc(100% - 100px);
-    margin: 0 50px 50px 50px;
+
 }
 /*default state - hidden*/
 .edit {

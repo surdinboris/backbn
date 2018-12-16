@@ -6,21 +6,34 @@
     <link rel="stylesheet" type="text/css" href="style/css/mainstyle.css">
 </head>
 <body>
+
+
 <section>
-    <header>
-        <h1>Backbone /JS</h1>
-        <p>RESTful</p>
-    </header>
+
+    <div class="container">
+        <header>
+            <h1>Backbone /JS</h1>
+            <p>RESTful</p>
+        </header>
+
+        <aside>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna
+        </aside>
     <article id="todoapp">
-        <div>
+
+        <div class="record">
             <input class="creating" id="new-todo" placeholder="What needs to be done?" autofocus>
         </div>
-
     </article>
+    </div>
+
     <footer>
         Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
     </footer>
+
 </section>
+
+
 <script type="text/template" id="item-template">
     <input class="toggle" type="checkbox" <%= completed ? 'checked' : '' %>>
     <label><%= title %></label>
