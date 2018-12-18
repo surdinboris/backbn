@@ -24,14 +24,17 @@ header {
     border-radius: 5px;
 }
 
-section,
-footer
-{
+section{
     min-width:400px;
     text-align: center;
-    background-color: #666666;
+    position: relative;
+    height: 100%;
     border-radius: 5px;
     padding: 50px;
+}
+footer
+{
+    background-color: #666666;
 }
 
 
@@ -41,13 +44,15 @@ div {
     margin: 10px;
     text-align: left;
 }
-.container{
-    background: #b4a980;
-    position: relative;
-    height: 100%;
-    border-radius: 5px;
 
-}
+/*.container{*/
+    /*background: #b4a980;*/
+    /*position: relative;*/
+    /*height: 100%;*/
+    /*border-radius: 5px;*/
+
+/*}*/
+
 label{
     display: inline;
     width: 6px;
