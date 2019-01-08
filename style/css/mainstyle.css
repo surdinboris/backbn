@@ -12,15 +12,19 @@ body {
 }
 
 div#main-container {
-    display: table; /* Make the container element behave like a table */
-    height: 100%;
-    width: 100%;
 
+    display: table; /* Make the container element behave like a table */
+    border-spacing: 18px;
+    background-color: burlywood;
 }
+
+
 article, aside, section, nav {
     display: table-cell;
-    width: 33.33%;
-    border-radius: 5%;
+    width: 33%;
+    padding: 20px;
+    border-radius: 5px;
+
 }
 
 h1 {
@@ -31,7 +35,7 @@ h1 {
 header {
     background-color: #adbcf1;
     text-align: center;
-    border-radius: 5%+95px;
+    border-radius: 5px;
 }
 
 nav {
@@ -47,7 +51,7 @@ footer  {
     Width: 960px;
     bottom: 0;
     background-color: #666666;
-    border-radius: 25px;
+    border-radius: 5px;
 }
 
 
