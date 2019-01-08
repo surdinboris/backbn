@@ -6,10 +6,22 @@ button {
 
 
 body {
-
-    background-color: lightblue;
+    max-width: 960px;
+    margin: auto;
+    background-color: #dae6c8;
 }
 
+div#main-container {
+    display: table; /* Make the container element behave like a table */
+    height: 100%;
+    width: 100%;
+
+}
+article, aside, section, nav {
+    display: table-cell;
+    width: 33.33%;
+    border-radius: 5%;
+}
 
 h1 {
     color: navy;
@@ -17,29 +29,29 @@ h1 {
 }
 
 header {
-    height: 30%;
-    width: 80%;
-    background-color: #F1F1F1;
+    background-color: #adbcf1;
     text-align: center;
+    border-radius: 5%+95px;
+}
+
+nav {
+    background-color: #dfc0f1;
+}
+section {
     border-radius: 5px;
 }
 
-section{
-    min-width:400px;
-    text-align: center;
-    position: relative;
-    height: 100%;
-    border-radius: 5px;
-    padding: 50px;
-}
-footer
-{
+footer  {
+    float:  bottom;
+    height: auto;
+    Width: 960px;
+    bottom: 0;
     background-color: #666666;
+    border-radius: 25px;
 }
 
 
-div {
-    display: block;
+div.record {
     width: 500px;
     margin: 10px;
     text-align: left;
@@ -65,29 +77,16 @@ label{
 
 
 article {
-    width: 80%;
-    height: 100%;
     background-color: #f1d1ba;
     padding: 40px;
-    border-radius: 5px;
 
 }
 
 aside{
-    position: absolute;
-    border-radius: 5px;
-    right: 0;
-    bottom: 0;
-    height: 100%;
-    width: 20%;
-    background: aquamarine;
-    padding: 40px;
-
+    /*position: absolute;*/
+    background: #eef1ac;
 }
 section {
-
-    width: calc(100% - 100px);
-
 }
 /*default state - hidden*/
 .edit {
