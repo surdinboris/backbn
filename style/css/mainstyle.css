@@ -6,24 +6,30 @@ button {
 
 
 body {
-    max-width: 960px;
+    max-width: 100%;
     margin: auto;
-    background-color: #dae6c8;
+    /*background-color: #dae6c8;*/
+    background-image: url("swirly.jpg");
 }
 
 div#main-container {
 
     display: table; /* Make the container element behave like a table */
     border-spacing: 18px;
-    background-color: burlywood;
+    /*background-color: #ff516a;*/
 }
 
+header {
+    background-color: #5b5e7e;
+    text-align: center;
+    border-radius: 25px;
+}
 
 article, aside, section, nav {
     display: table-cell;
     width: 33%;
     padding: 20px;
-    border-radius: 5px;
+    border-radius: 25px;
 
 }
 
@@ -32,23 +38,19 @@ h1 {
     margin-left: 20px;
 }
 
-header {
-    background-color: #adbcf1;
-    text-align: center;
-    border-radius: 5px;
-}
+
 
 nav {
-    background-color: #dfc0f1;
+    background-color: #dcffe9;
 }
 section {
-    border-radius: 5px;
+    border-radius: 25px;
 }
 
 footer  {
     float:  bottom;
     height: auto;
-    Width: 960px;
+    Width: 100%;
     bottom: 0;
     background-color: #666666;
     border-radius: 5px;
