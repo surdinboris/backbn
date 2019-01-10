@@ -25,11 +25,24 @@ header {
     border-radius: 25px;
 }
 
-article, aside, section, nav {
+header nav ul{
+
+    /*background-color: #8174f1;*/
+    display: inline;
+    list-style-type: none;
+    width: 100%;
+    margin: 0;
+    padding: 0}
+
+article, aside, section, nav.main {
     display: table-cell;
     width: 33%;
     padding: 20px;
     border-radius: 25px;
+}
+
+nav #main {
+    background-color: #ca4446;
 
 }
 
@@ -40,9 +53,6 @@ h1 {
 
 
 
-nav {
-    background-color: #dcffe9;
-}
 section {
     border-radius: 25px;
 }
