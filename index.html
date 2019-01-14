@@ -3,6 +3,7 @@
     <meta charset="utf-8">
     <link rel="stylesheet" type="text/css" href="node_modules/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="style/css/mainstyle.css">
+    <link rel="stylesheet" type="text/css" href="style/css/addstyle.css">
 </head>
 <body>
 
@@ -10,8 +11,8 @@
     #header
     <h1>Backbone /JS</h1>
     RESTful
-    <nav>
-        #nav
+    <nav id="header">
+        #nav header
         <ul>
             <li><a href="#">Home</a></li>
             <li><a href="#">About Us</a></li>
@@ -20,11 +21,10 @@
     </nav>
 </header>
 
+
 <div id="main-container">
-
-
     <nav class="main">
-        #nav
+        #nav main
         <ul>
             <li><a href="#">Home</a></li>
             <li><a href="#">About Us</a></li>
@@ -34,7 +34,8 @@
 
 <article id="todoapp">
     #article
-    <div class="record">
+    <div class="newrecord">
+        <label for="new-todo">New entry </label>
         <input class="creating" id="new-todo" placeholder="What needs to be done?" autofocus>
     </div>
 </article>
@@ -50,7 +51,7 @@
 
 <script type="text/template" id="item-template">
     <input class="toggle" type="checkbox" <%= completed ? 'checked' : '' %>>
-    <label><%= title %></label>
+    <label class="record"><%= title %></label>
     <input class="edit" id="todoediting" value="<%= title %>">
     <input class="edit" id="tododate" type="date" value="<%= todoDate %>">
     <button class="destroy">delete</button>

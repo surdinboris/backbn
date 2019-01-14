@@ -4,12 +4,11 @@ button {
     margin: auto;
 }
 
-
 body {
     max-width: 100%;
     margin: auto;
     /*background-color: #dae6c8;*/
-    background-image: url("swirly.jpg");
+    background-image: url("/swirly.jpg");
 }
 
 div#main-container {
@@ -34,6 +33,7 @@ header nav ul{
     margin: 0;
     padding: 0}
 
+
 article, aside, section, nav.main {
     display: table-cell;
     width: 33%;
@@ -41,10 +41,30 @@ article, aside, section, nav.main {
     border-radius: 25px;
 }
 
-nav #main {
-    background-color: #ca4446;
-
+label.record:hover {
+    color: #ca4446;
 }
+
+div:nth-of-type(even){
+    background-color: #aecab6;
+}
+
+label.record:active{
+    color: #ff4100;
+}
+input.creating{
+    width: 200px;
+    padding: 2px 10px;
+    border-radius:9px;
+}
+div.newrecord{
+    background-color: #f1d1ba;
+}
+
+.main {
+    background-color: #adbcf1;
+}
+
 
 h1 {
     color: navy;
@@ -93,17 +113,26 @@ label{
 
 
 article {
-    background-color: #f1d1ba;
-    padding: 40px;
+    background: #f1d1ba;
 
 }
+
+
+
+/*div article, div article *, ::placeholder{*/
+    /*color: red;*/
+/*}*/
+
 
 aside{
     /*position: absolute;*/
     background: #eef1ac;
 }
+
 section {
+
 }
+
 /*default state - hidden*/
 .edit {
     display: none;
@@ -122,3 +151,4 @@ section {
 .editing label{
     display: none;
 }
+
