@@ -2,9 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="972bd706-461e-4bf7-b05d-0d2f9a8adda6" name="Default" comment="">
-      <change beforePath="" afterPath="$PROJECT_DIR$/images/pexels-photo-355770.jpeg" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/cssplground.html" afterPath="$PROJECT_DIR$/cssplground.html" />
       <change beforePath="$PROJECT_DIR$/cssplgrstyle.css" afterPath="$PROJECT_DIR$/cssplgrstyle.css" />
     </list>
     <ignored path="$PROJECT_DIR$/out/" />
@@ -30,8 +27,8 @@
       <file leaf-file-name="cssplgrstyle.css" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/cssplgrstyle.css">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="66">
-              <caret line="3" column="15" lean-forward="true" selection-start-line="3" selection-start-column="15" selection-end-line="3" selection-end-column="15" />
+            <state relative-caret-position="132">
+              <caret line="6" column="15" lean-forward="true" selection-start-line="6" selection-start-column="15" selection-end-line="6" selection-end-column="15" />
               <folding />
             </state>
           </provider>
@@ -166,8 +163,8 @@
     <handled-path value="$PROJECT_DIR$/node_modules" />
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="-265" />
-    <option name="y" value="159" />
+    <option name="x" value="-260" />
+    <option name="y" value="196" />
     <option name="width" value="1202" />
     <option name="height" value="1028" />
   </component>
@@ -378,12 +375,12 @@
       <workItem from="1547985363055" duration="24341000" />
       <workItem from="1549983955582" duration="599000" />
       <workItem from="1550134065243" duration="645000" />
-      <workItem from="1550641629684" duration="31375000" />
+      <workItem from="1550641629684" duration="32090000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="596148000" />
+    <option name="totallyTimeSpent" value="596863000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -395,7 +392,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="-265" y="159" width="1202" height="1028" extended-state="0" />
+    <frame x="-260" y="196" width="1202" height="1028" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -766,8 +763,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/cssplgrstyle.css">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="66">
-          <caret line="3" column="15" lean-forward="true" selection-start-line="3" selection-start-column="15" selection-end-line="3" selection-end-column="15" />
+        <state relative-caret-position="132">
+          <caret line="6" column="15" lean-forward="true" selection-start-line="6" selection-start-column="15" selection-end-line="6" selection-end-column="15" />
           <folding />
         </state>
       </provider>
