@@ -1,0 +1,32 @@
+body{
+    margin: 0;
+}
+#main_navbar{
+    width: 100%;
+    position: fixed;
+    background-color: #f1fbeb;
+}
+#main_navbar ul{
+    margin: 0;
+    display: flex;
+    padding: 10px 0px;
+
+}
+#main_navbar li{
+    display: inline-block;
+    margin: 0 auto;
+}
+.main_navbar_item{
+    text-decoration: none;
+    color: black;
+}
+#main_navbar a{
+    width: 100%;
+    vertical-align: 0px;
+}
+#main_navbar li{
+    text-align: center;
+
+    width: 100%;
+    border-right: 1px solid #000000;
+}

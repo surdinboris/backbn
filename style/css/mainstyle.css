@@ -6,39 +6,58 @@ button {
 
 body {
     max-width: 100%;
-    margin: auto;
-    /*background-color: #dae6c8;*/
-    background-image: url("/swirly.jpg");
+    margin: 0;
+    background-size: 2%, 5%;
+    background-position: left, 23px;
+    /*background-image: url("/swirly.jpg");*/
 }
 
 div#main-container {
-
+    padding-top: 56px;
     display: table; /* Make the container element behave like a table */
     border-spacing: 18px;
     /*background-color: #ff516a;*/
 }
 
-header {
-    background-color: #5b5e7e;
-    text-align: center;
-    border-radius: 25px;
-}
 
-header nav ul{
-
-    /*background-color: #8174f1;*/
-    display: inline;
-    list-style-type: none;
+nav#header{
+    position: fixed;
     width: 100%;
     margin: 0;
-    padding: 0}
 
+    border-radius: 0;
+    background-color: #888f91;
+}
+
+header ul,
+header li,
+header a{
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+}
+
+header ul{
+    margin-left: 0px;
+}
+
+
+header a{
+    padding: 16px;
+    background-color: #dae6c8;
+    border-radius: 5px;
+}
+header a:hover{
+    text-underline: none;
+}
 
 article, aside, section, nav.main {
     display: table-cell;
-    width: 33%;
     padding: 20px;
     border-radius: 25px;
+}
+article{
+  width: 90%;
 }
 
 label.record:hover {
@@ -61,6 +80,7 @@ div.newrecord{
     background-color: #f1d1ba;
 }
 
+
 .main {
     background-color: #adbcf1;
 }
@@ -80,7 +100,7 @@ section {
 footer  {
     float:  bottom;
     height: auto;
-    Width: 100%;
+    width: 100%;
     bottom: 0;
     background-color: #666666;
     border-radius: 5px;
