@@ -266,7 +266,7 @@ RESTmethods.GET = async function (request) {
     console.log('RESTmethods.GET >> ', id || 'no id');
     //in case of rest request
     if (id != 'up') {
-        console.log('id != up')
+        console.log('id != up');
         let resp;
         if (id) {
             resp = await getById(id);

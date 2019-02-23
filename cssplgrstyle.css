@@ -21,7 +21,7 @@ body{
 #main_navbar ul{
     margin: 0;
     display: flex;
-    padding: 10px 0;
+    padding: 10px 0px;
 
 }
 #main_navbar li{
@@ -35,7 +35,7 @@ body{
 #main_navbar a{
     width: 100%;
     vertical-align: 0;
-    padding: 5px;
+    padding: 10px 10px;
 }
 #main_navbar a:hover{
     background-color: gold;
@@ -96,7 +96,6 @@ body{
 }
 
 footer{
-
     bottom: 0;
     margin: 40px 0 auto;
     color: #b4a980;
@@ -110,14 +109,26 @@ footer{
 #copyr-info p{
     margin: 0 15px;
     padding: 5px;
-    border-right: solid #ff4100 1px;
 }
 
-#copyr-info p:last-child{
-    border-right: none;
+
+#secure-stuff{
+    width: 50%;
+    display: flex;
+    margin: 0 auto;
+    padding: 5px;
 }
-#secure-stuff p{
+
+#secure-stuff li{
     display: inline-block;
-
-
+    margin: 0 auto;
+}
+#secure-stuff a{
+    text-decoration: none;
+    color: #b4a980;
+    padding: 4px;
+}
+#secure-stuff a:hover{
+background-color: #666666;
+    color: white;
 }
